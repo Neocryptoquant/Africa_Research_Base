@@ -1,9 +1,156 @@
+#![allow(unexpected_cfgs)]
 use anchor_lang::prelude::*;
 
-#[derive(Accounts)]
-pub struct Initialize {}
+use crate::{Attribution, Citation, Dataset, Registry, Reputation};
 
-pub fn handler(ctx: Context<Initialize>) -> Result<()> {
-    msg!("Greetings from: {:?}", ctx.program_id);
-    Ok(())
+#[derive(Accounts)]
+pub struct Initialize <'info> {
+    #[account(mut)]
+    pub admin: Signer<'info>,
+
+    #[account(mut)]
+    pub user: Signer<'info>,
+
+    #[account(mut)]
+    pub contributor: Signer<'info>,
+    #[account(
+        init,
+        payer = admin,
+        space = 8 + Registry::INIT_SPACE,
+        seeds = [b"registry", admin.key().as_ref()],
+        bump
+    )]
+    pub registry: Account <'info, Registry>,
+
+    #[account(
+        init,
+        payer = admin,
+        space = 8 + Dataset::INIT_SPACE,
+        seeds = [b"dataset", admin.key().as_ref()],
+        bump
+    )]
+    pub dataset: Account <'info, Dataset>,
+
+    
+    #[account(
+        init,
+        payer = admin,
+        space = 8 + Citation::INIT_SPACE,
+        seeds = [b"citation", admin.key().as_ref()],
+        bump
+    )]
+    pub citation: Account <'info, Citation>,
+
+    #[account(
+        init,
+        payer = admin,
+        space = 8 + Reputation::INIT_SPACE,
+        seeds = [b"reputation", admin.key().as_ref()],
+        bump
+    )]
+    pub reputation: Account <'info, Reputation>,
+
+    #[account(
+        init,
+        payer = admin,
+        space = 8 + Attribution::INIT_SPACE,
+        seeds = [b"attribution", admin.key().as_ref()],
+        bump
+    )]
+    pub attribution: Account <'info, Attribution>,
+
+    pub system_program: Program<'info, System>
+}
+
+
+impl <'info> Initialize <'info> {
+    pub fn initialize_registry (
+        &mut self,
+        bumps: &InitializeBumps
+    ) -> Result<()> {
+        self.registry.set_inner(Registry {
+            admin: self.admin.key(),
+            total_datasets: 0,
+            total_downloads: 0,
+            bump: bumps.registry
+        });
+
+        Ok(())
+
+    }
+
+    pub fn initialize_dataset (
+        &mut self,
+        bumps: &InitializeBumps
+    ) -> Result<()> {
+        self.dataset.set_inner(Dataset {
+            id: self.admin.key(),
+            contributor: self.contributor.key(),
+            content_hash: [0u8; 32],
+            ai_metadata: Vec::new(),
+            file_name: Vec::new(),
+            file_size: 0,
+            column_count: 0,
+            row_count: 0,
+            quality_score: 0,
+            upload_timestamp: 0,
+            last_updated: None,
+            download_count: 0,
+            is_active: false,
+            bump: bumps.dataset
+        });
+
+        Ok(())
+
+    }
+
+    
+    pub fn initialize_reputation (
+        &mut self,
+        bumps: &InitializeBumps
+    ) -> Result<()> {
+        self.reputation.set_inner(Reputation { 
+            contributor: self.contributor.key(), 
+            total_uploads: 0, 
+            download_time: 0, 
+            total_quality_score: 0, 
+            total_downloads: 0, 
+            total_citations: 0, 
+            reputation_score: 0, 
+            bump: bumps.reputation 
+        });
+
+        Ok(())
+    }
+
+    pub fn initialize_citation (
+        &mut self,
+        bumps: &InitializeBumps
+    ) -> Result<()> {
+        self.citation.set_inner(Citation { 
+            dataset_id: self.dataset.key(), 
+            citer: self.user.key(), 
+            contributor: self.contributor.key(), 
+            published_information: Vec::new(), 
+            citing_time: 0, 
+            bump: bumps.citation
+        });
+
+        Ok(())
+    }
+
+    pub fn initialize_attribution(
+        &mut self,
+        bumps: &InitializeBumps
+    ) -> Result<()> {
+        self.attribution.set_inner(Attribution { 
+            dataset_id: self.dataset.key(), 
+            downloader: self.user.key(), 
+            contributor: self.contributor.key(), 
+            download_time: 0, 
+            bump: bumps.attribution 
+        });
+
+        Ok(())
+    }
 }
