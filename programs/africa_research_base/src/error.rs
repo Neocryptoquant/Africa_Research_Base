@@ -18,4 +18,12 @@ pub enum ErrorCode {
     DatasetInactive,
     #[msg("Unauthorized to update this dataset")]
     UnauthorizedUpdate,
+    #[msg("Numerical overflow occurred")]
+    NumericalOverflow,
+    #[msg("Invalid reputation update")]
+    InvalidReputationUpdate,
+    #[msg("Unauthorized reputation update")]
+    UnauthorizedReputationUpdate,
+    #[msg("Invalid contributor status")]
+    InvalidContributorStatus,
 }
