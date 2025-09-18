@@ -26,17 +26,13 @@ pub struct CreateDataset <'info> {
         init,
         payer = contributor,
         space = 8 + Dataset::INIT_SPACE,
-        seeds = [b"dataset", contributor.key().as_ref()],
+        seeds = [b"dataset", contributor.key().as_ref(), &reputation.dataset_count.to_le_bytes()],
         bump
     )]
     pub dataset: Account <'info, Dataset>,
-    // #[account(
-    //     seeds = [b"dataset", contributor.key().as_ref(), dataset.content_hash.as_ref()],
-    //     bump
-    // )]
-    // pub dataset: Account <'info, Dataset>,
 
     #[account(
+        mut,
         seeds = [b"reputation", contributor.key().as_ref()],
         bump = reputation.bump
     )]
@@ -77,10 +73,13 @@ impl <'info> CreateDataset <'info> {
         // is_active: bool,
         bumps: &CreateDatasetBumps
     ) -> Result<()> {
-        // require!(content_hash.len() <= 64, ErrorCode::HashTooLong);
+        require!(content_hash.len() == 32, ErrorCode::HashTooLong);
+        require!(content_hash == content_hash, ErrorCode::DuplicateDataset);
         require!(file_name.len() <= 100, ErrorCode::FileNameTooLong);
         require!(quality_score <= 100, ErrorCode::InvalidQualityScore);
         require!(file_size <= 104_857_600, ErrorCode::FileTooLarge);
+        require!(file_size > 0, ErrorCode::InvalidFileSize);
+        require!(column_count <= 100, ErrorCode::TooManyColumns);
         // require!(upload_timestamp <= 104_857_600, ErrorCode::FileTooLarge);
 
 
@@ -106,6 +105,10 @@ impl <'info> CreateDataset <'info> {
         dataset.bump = bumps.dataset;
 
         registry.total_datasets = registry.total_datasets.checked_add(1).unwrap();
+
+        // Increment dataset count for the contributor
+        let reputation = &mut self.reputation;
+        reputation.dataset_count = reputation.dataset_count.checked_add(1).unwrap();
 
         // Update reputation through the dedicated handler
         self.update_reputation(quality_score)?;

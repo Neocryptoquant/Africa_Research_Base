@@ -24,6 +24,7 @@ export interface CreateDatasetArgs {
   export interface ReputationData {
     contributor: string;
     totalUploads: BN;
+    datasetCount: BN;
     downloadTime: BN;
     totalQualityScore: BN;
     totalDownloads: BN;

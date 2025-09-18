@@ -22,16 +22,20 @@ pub struct Initialize <'info> {
     )]
     pub registry: Account <'info, Registry>,
 
-    
-    // #[account(
-    //     init,
-    //     payer = admin,
-    //     space = 8 + Citation::INIT_SPACE,
-    //     seeds = [b"citation", admin.key().as_ref()],
-    //     bump
-    // )]
-    // pub citation: Account <'info, Citation>,
+    pub system_program: Program<'info, System>
+}
 
+#[derive(Accounts)]
+pub struct InitializeReputation <'info> {
+    #[account(mut)]
+    pub admin: Signer<'info>,
+
+    #[account(mut)]
+    pub user: Signer<'info>,
+
+    #[account(mut)]
+    pub contributor: Signer<'info>,
+    
     #[account(
         init,
         payer = contributor,
@@ -40,15 +44,6 @@ pub struct Initialize <'info> {
         bump
     )]
     pub reputation: Account <'info, Reputation>,
-
-    // #[account(
-    //     init,
-    //     payer = admin,
-    //     space = 8 + Attribution::INIT_SPACE,
-    //     seeds = [b"attribution", admin.key().as_ref()],
-    //     bump
-    // )]
-    // pub attribution: Account <'info, Attribution>,
 
     pub system_program: Program<'info, System>
 }
@@ -96,23 +91,23 @@ impl <'info> Initialize <'info> {
     // }
 
     
-    pub fn initialize_reputation (
-        &mut self,
-        bumps: &InitializeBumps
-    ) -> Result<()> {
-        self.reputation.set_inner(Reputation { 
-            contributor: self.contributor.key(), 
-            total_uploads: 0, 
-            download_time: 0, 
-            total_quality_score: 0, 
-            total_downloads: 0, 
-            total_citations: 0, 
-            reputation_score: 0, 
-            bump: bumps.reputation 
-        });
+    // pub fn initialize_reputation (
+    //     &mut self,
+    //     bumps: &InitializeBumps
+    // ) -> Result<()> {
+    //     self.reputation.set_inner(Reputation { 
+    //         contributor: self.contributor.key(), 
+    //         total_uploads: 0, 
+    //         download_time: 0, 
+    //         total_quality_score: 0, 
+    //         total_downloads: 0, 
+    //         total_citations: 0, 
+    //         reputation_score: 0, 
+    //         bump: bumps.reputation 
+    //     });
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 
     // pub fn initialize_citation (
     //     &mut self,
@@ -144,4 +139,25 @@ impl <'info> Initialize <'info> {
 
         // Ok(())
     
+}
+
+impl <'info> InitializeReputation <'info> {
+    pub fn initialize_reputation (
+        &mut self,
+        bumps: &InitializeReputationBumps
+    ) -> Result<()> {
+        self.reputation.set_inner(Reputation { 
+            contributor: self.contributor.key(), 
+            total_uploads: 0, 
+            dataset_count: 0, 
+            download_time: 0, 
+            total_quality_score: 0, 
+            total_downloads: 0, 
+            total_citations: 0, 
+            reputation_score: 0, 
+            bump: bumps.reputation 
+        });
+
+        Ok(())
+    }
 }

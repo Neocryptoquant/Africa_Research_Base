@@ -5,6 +5,7 @@ use anchor_lang::prelude::*;
 pub struct Reputation {
     pub contributor: Pubkey,
     pub total_uploads: u32,
+    pub dataset_count: u32, // Track number of datasets created by this contributor
     pub download_time: i64,
     pub total_quality_score: u64,
     pub total_downloads: u64,

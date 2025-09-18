@@ -43,7 +43,7 @@ pub mod africa_research_base {
         Ok(())
     }
     pub fn initialize_reputation(
-        ctx: Context<Initialize>
+        ctx: Context<InitializeReputation>
     ) -> Result<()> {
         ctx.accounts.initialize_reputation(&ctx.bumps)
     }
