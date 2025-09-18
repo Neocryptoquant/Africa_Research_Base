@@ -40,7 +40,8 @@ pub struct UpdateReputationOnDownload<'info> {
     pub reputation: Account<'info, Reputation>,
 
     #[account(
-        seeds = [b"dataset", contributor.key().as_ref()],
+        mut,
+        seeds = [b"dataset", contributor.key().as_ref(), &dataset.dataset_index.to_le_bytes()],
         bump,
         constraint = dataset.contributor == contributor.key()
     )]
@@ -65,7 +66,8 @@ pub struct UpdateReputationOnCitation<'info> {
     pub reputation: Account<'info, Reputation>,
 
     #[account(
-        seeds = [b"dataset", admin.key().as_ref()],
+        mut,
+        seeds = [b"dataset", contributor.key().as_ref(), &dataset.dataset_index.to_le_bytes()],
         bump,
         constraint = dataset.contributor == contributor.key()
     )]

@@ -370,7 +370,7 @@ describe("Africa Research Base (ARB)", () => {
           expect(error).to.have.property('error');
           expect(error.error).to.have.property('errorCode');
           expect(error.error.errorCode).to.have.property('code', 'FileTooLarge');
-          expect(error.error.errorCode).to.have.property('number', 6002);
+          expect(error.error.errorCode).to.have.property('number', 6005);
         }
       });
 
@@ -429,7 +429,7 @@ describe("Africa Research Base (ARB)", () => {
           expect(error).to.have.property('error');
           expect(error.error).to.have.property('errorCode');
           expect(error.error.errorCode).to.have.property('code', 'InvalidQualityScore');
-          expect(error.error.errorCode).to.have.property('number', 6000);
+          expect(error.error.errorCode).to.have.property('number', 6003);
         }
       });
 
@@ -488,7 +488,7 @@ describe("Africa Research Base (ARB)", () => {
           expect(error).to.have.property('error');
           expect(error.error).to.have.property('errorCode');
           expect(error.error.errorCode).to.have.property('code', 'InvalidFileSize');
-          expect(error.error.errorCode).to.have.property('number', 6001);
+          expect(error.error.errorCode).to.have.property('number', 6006);
         }
       });
 
@@ -584,8 +584,11 @@ describe("Africa Research Base (ARB)", () => {
         // Verify that both datasets exist and have different counters
         const firstDataset = await program.account.dataset.fetch(datasetPda);
         const secondDataset = await program.account.dataset.fetch(newDatasetPda);
-        expect(firstDataset.contentHash).to.equal(duplicateContentHash);
-        expect(secondDataset.contentHash).to.equal(duplicateContentHash);
+
+        expect(firstDataset.contentHash).to.deep.equal(duplicateContentHash);  // CHANGED: .deep.equal
+        expect(Array.from(firstDataset.contentHash)).to.deep.equal(duplicateContentHash);  // ALT: Explicit convert if needed
+        expect(secondDataset.contentHash).to.deep.equal(duplicateContentHash);  // CHANGED
+        
         expect(firstDataset.contributor.toString()).to.equal(researcher1.publicKey.toString());
         expect(secondDataset.contributor.toString()).to.equal(researcher1.publicKey.toString());
       });

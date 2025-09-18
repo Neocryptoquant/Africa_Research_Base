@@ -12,6 +12,7 @@ pub struct Dataset {
 
     #[max_len(100)]
     pub file_name: Vec<u8>,
+    pub dataset_index: u32,
     pub file_size: u64,
     pub data_uri: [u8; 256],
     pub column_count: u64,

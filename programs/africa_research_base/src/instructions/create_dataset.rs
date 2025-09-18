@@ -88,6 +88,10 @@ impl <'info> CreateDataset <'info> {
         //let reputation = &mut self.reputation;
         let clock = Clock::get()?;
 
+        //bug fix here manualaly. IDKKKK
+        let current_index =self.reputation.dataset_count;
+        dataset.dataset_index  = current_index;
+
         dataset.id = dataset.key();
         dataset.contributor = self.contributor.key();
         dataset.content_hash = content_hash;
