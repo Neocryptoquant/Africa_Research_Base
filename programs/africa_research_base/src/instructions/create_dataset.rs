@@ -2,6 +2,7 @@
 use anchor_lang::prelude::*;
 
 use crate::{Dataset, Registry, Reputation};
+use crate::events::{DatasetCreated, ReputationUpdated};
 use crate::error::ErrorCode;
 
 #[derive(Accounts)]
@@ -83,6 +84,7 @@ impl <'info> CreateDataset <'info> {
         // require!(upload_timestamp <= 104_857_600, ErrorCode::FileTooLarge);
 
 
+        {
         let dataset = &mut self.dataset;
         let registry = &mut self.registry;
         //let reputation = &mut self.reputation;
@@ -109,16 +111,36 @@ impl <'info> CreateDataset <'info> {
         dataset.bump = bumps.dataset;
 
         registry.total_datasets = registry.total_datasets.checked_add(1).unwrap();
+    }
 
         // Increment dataset count for the contributor
-        let reputation = &mut self.reputation;
+        {let reputation = &mut self.reputation;
         reputation.dataset_count = reputation.dataset_count.checked_add(1).unwrap();
+        }
 
         // Update reputation through the dedicated handler
         self.update_reputation(quality_score)?;
 
+        
+        //Emit events
+        let clock = Clock::get()?;
+        emit!(DatasetCreated {
+            id: self.dataset.key(),
+            contributor: self.contributor.key(),
+            content_hash,
+            quality_score,
+            upload_timestamp: clock.unix_timestamp,
+       });
+
+       emit!(ReputationUpdated {
+           contributor: self.contributor.key(),
+           action: "upload".to_string(),
+           new_dataset_count: self.reputation.dataset_count,
+           new_reputation_score: self.reputation.reputation_score,  // Use existing field
+       });
         Ok(())
     }
+    
 }
 
 
