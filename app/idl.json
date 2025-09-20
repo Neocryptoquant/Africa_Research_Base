@@ -1,0 +1,927 @@
+{
+    "address": "EAo3vy4cYj9ezXbkZRwWkhUnNCjiBcF2qp8vwXwNsPPD",
+    "metadata": {
+      "name": "africa_research_base",
+      "version": "0.1.0",
+      "spec": "0.1.0",
+      "description": "Created with Anchor"
+    },
+    "instructions": [
+      {
+        "name": "create_dataset",
+        "discriminator": [
+          63,
+          151,
+          84,
+          132,
+          246,
+          167,
+          216,
+          122
+        ],
+        "accounts": [
+          {
+            "name": "admin",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "user",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "contributor",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "registry",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    114,
+                    101,
+                    103,
+                    105,
+                    115,
+                    116,
+                    114,
+                    121
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "admin"
+                }
+              ]
+            }
+          },
+          {
+            "name": "dataset",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    100,
+                    97,
+                    116,
+                    97,
+                    115,
+                    101,
+                    116
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                },
+                {
+                  "kind": "account",
+                  "path": "reputation.dataset_count",
+                  "account": "Reputation"
+                }
+              ]
+            }
+          },
+          {
+            "name": "reputation",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    114,
+                    101,
+                    112,
+                    117,
+                    116,
+                    97,
+                    116,
+                    105,
+                    111,
+                    110
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": [
+          {
+            "name": "content_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "ai_metadata",
+            "type": "bytes"
+          },
+          {
+            "name": "file_name",
+            "type": "bytes"
+          },
+          {
+            "name": "file_size",
+            "type": "u64"
+          },
+          {
+            "name": "data_uri",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          },
+          {
+            "name": "column_count",
+            "type": "u64"
+          },
+          {
+            "name": "row_count",
+            "type": "u64"
+          },
+          {
+            "name": "quality_score",
+            "type": "u8"
+          }
+        ]
+      },
+      {
+        "name": "initialize_registry",
+        "discriminator": [
+          189,
+          181,
+          20,
+          17,
+          174,
+          57,
+          249,
+          59
+        ],
+        "accounts": [
+          {
+            "name": "admin",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "user",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "contributor",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "registry",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    114,
+                    101,
+                    103,
+                    105,
+                    115,
+                    116,
+                    114,
+                    121
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "admin"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "initialize_reputation",
+        "discriminator": [
+          150,
+          240,
+          109,
+          53,
+          147,
+          42,
+          152,
+          162
+        ],
+        "accounts": [
+          {
+            "name": "admin",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "user",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "contributor",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "reputation",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    114,
+                    101,
+                    112,
+                    117,
+                    116,
+                    97,
+                    116,
+                    105,
+                    111,
+                    110
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "update_reputation_citation",
+        "discriminator": [
+          177,
+          182,
+          241,
+          171,
+          221,
+          17,
+          167,
+          221
+        ],
+        "accounts": [
+          {
+            "name": "admin",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "contributor",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "reputation",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    114,
+                    101,
+                    112,
+                    117,
+                    116,
+                    97,
+                    116,
+                    105,
+                    111,
+                    110
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                }
+              ]
+            }
+          },
+          {
+            "name": "dataset",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    100,
+                    97,
+                    116,
+                    97,
+                    115,
+                    101,
+                    116
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                },
+                {
+                  "kind": "account",
+                  "path": "dataset.dataset_index",
+                  "account": "Dataset"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "update_reputation_download",
+        "discriminator": [
+          212,
+          189,
+          231,
+          96,
+          172,
+          238,
+          175,
+          133
+        ],
+        "accounts": [
+          {
+            "name": "admin",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "contributor",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "reputation",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    114,
+                    101,
+                    112,
+                    117,
+                    116,
+                    97,
+                    116,
+                    105,
+                    111,
+                    110
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                }
+              ]
+            }
+          },
+          {
+            "name": "dataset",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    100,
+                    97,
+                    116,
+                    97,
+                    115,
+                    101,
+                    116
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                },
+                {
+                  "kind": "account",
+                  "path": "dataset.dataset_index",
+                  "account": "Dataset"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "update_reputation_upload",
+        "discriminator": [
+          246,
+          109,
+          89,
+          121,
+          203,
+          175,
+          144,
+          59
+        ],
+        "accounts": [
+          {
+            "name": "admin",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "contributor",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "reputation",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "const",
+                  "value": [
+                    114,
+                    101,
+                    112,
+                    117,
+                    116,
+                    97,
+                    116,
+                    105,
+                    111,
+                    110
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "contributor"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": [
+          {
+            "name": "quality_score",
+            "type": "u8"
+          }
+        ]
+      }
+    ],
+    "accounts": [
+      {
+        "name": "Dataset",
+        "discriminator": [
+          242,
+          85,
+          87,
+          90,
+          234,
+          188,
+          241,
+          17
+        ]
+      },
+      {
+        "name": "Registry",
+        "discriminator": [
+          47,
+          174,
+          110,
+          246,
+          184,
+          182,
+          252,
+          218
+        ]
+      },
+      {
+        "name": "Reputation",
+        "discriminator": [
+          55,
+          148,
+          90,
+          71,
+          68,
+          183,
+          193,
+          28
+        ]
+      }
+    ],
+    "events": [
+      {
+        "name": "CitationRecorded",
+        "discriminator": [
+          220,
+          191,
+          162,
+          148,
+          186,
+          138,
+          129,
+          29
+        ]
+      },
+      {
+        "name": "DatasetCreated",
+        "discriminator": [
+          86,
+          96,
+          11,
+          103,
+          98,
+          235,
+          251,
+          94
+        ]
+      },
+      {
+        "name": "ReputationUpdated",
+        "discriminator": [
+          26,
+          36,
+          187,
+          150,
+          235,
+          90,
+          106,
+          89
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "code": 6000,
+        "name": "CustomError",
+        "msg": "Custom error message"
+      },
+      {
+        "code": 6001,
+        "name": "HashTooLong",
+        "msg": "Content hash too long"
+      },
+      {
+        "code": 6002,
+        "name": "FileNameTooLong",
+        "msg": "File name too long"
+      },
+      {
+        "code": 6003,
+        "name": "InvalidQualityScore",
+        "msg": "Invalid quality score (must be 0-100)"
+      },
+      {
+        "code": 6004,
+        "name": "TooManyFields",
+        "msg": "Too many research fields (max 10)"
+      },
+      {
+        "code": 6005,
+        "name": "FileTooLarge",
+        "msg": "File too large (max 100MB)"
+      },
+      {
+        "code": 6006,
+        "name": "InvalidFileSize",
+        "msg": "Invalid file size (must be greater than 0)"
+      },
+      {
+        "code": 6007,
+        "name": "TooManyColumns",
+        "msg": "Too many columns (max 100)"
+      },
+      {
+        "code": 6008,
+        "name": "DatasetInactive",
+        "msg": "Dataset is inactive"
+      },
+      {
+        "code": 6009,
+        "name": "UnauthorizedUpdate",
+        "msg": "Unauthorized to update this dataset"
+      },
+      {
+        "code": 6010,
+        "name": "NumericalOverflow",
+        "msg": "Numerical overflow occurred"
+      },
+      {
+        "code": 6011,
+        "name": "InvalidReputationUpdate",
+        "msg": "Invalid reputation update"
+      },
+      {
+        "code": 6012,
+        "name": "UnauthorizedReputationUpdate",
+        "msg": "Unauthorized reputation update"
+      },
+      {
+        "code": 6013,
+        "name": "DuplicateDataset",
+        "msg": "Dataset with this content hash already exists for this contributor"
+      },
+      {
+        "code": 6014,
+        "name": "InvalidContributorStatus",
+        "msg": "Invalid contributor status"
+      }
+    ],
+    "types": [
+      {
+        "name": "CitationRecorded",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "dataset_id",
+              "type": "pubkey"
+            },
+            {
+              "name": "citer",
+              "type": "pubkey"
+            },
+            {
+              "name": "contributor",
+              "type": "pubkey"
+            },
+            {
+              "name": "citing_time",
+              "type": "i64"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Dataset",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "type": "pubkey"
+            },
+            {
+              "name": "contributor",
+              "type": "pubkey"
+            },
+            {
+              "name": "content_hash",
+              "type": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            },
+            {
+              "name": "ai_metadata",
+              "type": "bytes"
+            },
+            {
+              "name": "file_name",
+              "type": "bytes"
+            },
+            {
+              "name": "dataset_index",
+              "type": "u32"
+            },
+            {
+              "name": "file_size",
+              "type": "u64"
+            },
+            {
+              "name": "data_uri",
+              "type": {
+                "array": [
+                  "u8",
+                  256
+                ]
+              }
+            },
+            {
+              "name": "column_count",
+              "type": "u64"
+            },
+            {
+              "name": "row_count",
+              "type": "u64"
+            },
+            {
+              "name": "quality_score",
+              "type": "u8"
+            },
+            {
+              "name": "upload_timestamp",
+              "type": "i64"
+            },
+            {
+              "name": "last_updated",
+              "type": {
+                "option": "i64"
+              }
+            },
+            {
+              "name": "download_count",
+              "type": "u32"
+            },
+            {
+              "name": "is_active",
+              "type": "bool"
+            },
+            {
+              "name": "bump",
+              "type": "u8"
+            }
+          ]
+        }
+      },
+      {
+        "name": "DatasetCreated",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "type": "pubkey"
+            },
+            {
+              "name": "contributor",
+              "type": "pubkey"
+            },
+            {
+              "name": "content_hash",
+              "type": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            },
+            {
+              "name": "quality_score",
+              "type": "u8"
+            },
+            {
+              "name": "upload_timestamp",
+              "type": "i64"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Registry",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "admin",
+              "type": "pubkey"
+            },
+            {
+              "name": "total_datasets",
+              "type": "u64"
+            },
+            {
+              "name": "total_downloads",
+              "type": "u64"
+            },
+            {
+              "name": "bump",
+              "type": "u8"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Reputation",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "contributor",
+              "type": "pubkey"
+            },
+            {
+              "name": "total_uploads",
+              "type": "u32"
+            },
+            {
+              "name": "dataset_count",
+              "type": "u32"
+            },
+            {
+              "name": "download_time",
+              "type": "i64"
+            },
+            {
+              "name": "total_quality_score",
+              "type": "u64"
+            },
+            {
+              "name": "total_downloads",
+              "type": "u64"
+            },
+            {
+              "name": "total_citations",
+              "type": "u32"
+            },
+            {
+              "name": "reputation_score",
+              "type": "u32"
+            },
+            {
+              "name": "bump",
+              "type": "u8"
+            }
+          ]
+        }
+      },
+      {
+        "name": "ReputationUpdated",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "contributor",
+              "type": "pubkey"
+            },
+            {
+              "name": "action",
+              "type": "string"
+            },
+            {
+              "name": "new_dataset_count",
+              "type": "u32"
+            },
+            {
+              "name": "new_reputation_score",
+              "type": "u32"
+            }
+          ]
+        }
+      }
+    ],
+    "constants": [
+      {
+        "name": "SEED",
+        "type": "string",
+        "value": "\"anchor\""
+      }
+    ]
+  }
