@@ -44,31 +44,24 @@ if (process.env.ANCHOR_WALLET) {
 
 const wallet = {
   publicKey: keypair.publicKey,
-  signTransaction: async (tx: any) => {
+  signTransaction: async (tx: Transaction | VersionedTransaction): Promise<Transaction | VersionedTransaction> => {
     try {
       console.log('Transaction type:', tx.constructor.name);
-      
+
       if (tx instanceof VersionedTransaction) {
         tx.sign([keypair]);
+        return tx; // VersionedTransaction.sign() returns void, but we return the tx
       } else if (tx instanceof Transaction) {
         tx.sign(keypair);
-      } else if (typeof tx.sign === 'function') {
-        // Try with array first, then without
-        try {
-          tx.sign([keypair]);
-        } catch (e) {
-          tx.sign(keypair);
-        }
-      } else {
-        throw new Error(`Unsupported transaction type: ${tx.constructor.name}`);
+        return tx;
       }
-      return tx;
+      throw new Error('Unsupported transaction type');
     } catch (error) {
-      console.error('Error signing transaction:', error);
+      console.error('Transaction signing failed:', error);
       throw error;
     }
   },
-  signAllTransactions: async (txs: any[]) => {
+  signAllTransactions: async (txs: (Transaction | VersionedTransaction)[]): Promise<(Transaction | VersionedTransaction)[]> => {
     try {
       const signedTxs = [];
       for (const tx of txs) {
@@ -83,7 +76,7 @@ const wallet = {
   }
 };
 
-const provider = new AnchorProvider(connection, wallet, { 
+const provider = new AnchorProvider(connection, wallet as any, { 
   commitment: 'confirmed',
   preflightCommitment: 'confirmed'
 });
@@ -166,10 +159,10 @@ export async function POST(req: NextRequest) {
     
     // Create compact metadata to avoid transaction size limits
     const compactMetadata = {
-      cols: columns.slice(0, 10).map(c => ({ n: c.name.slice(0, 20), t: c.type[0] })), // Truncate to 10 cols, 20 chars each
+      cols: columns.slice(0, 10).map((c: { name: string; type: string }) => ({ n: c.name.slice(0, 20), t: c.type[0] })), // Truncate to 10 cols, 20 chars each
       score: qualityScore,
       field: field.slice(0, 10),
-      tags: tags.slice(0, 3).map(t => t.slice(0, 15)) // Max 3 tags, 15 chars each
+      tags: tags.slice(0, 3).map((t: string) => t.slice(0, 15)) // Max 3 tags, 15 chars each
     };
     const metadata = Buffer.from(JSON.stringify(compactMetadata));
 

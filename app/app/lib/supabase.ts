@@ -1,15 +1,17 @@
-import { config } from 'dotenv';
-config({ path: '.env.local' });
 import { createClient } from '@supabase/supabase-js';
 
+// For Turbopack compatibility, we'll access environment variables directly
+// instead of using dotenv config which can cause issues with the new bundler
 
-// NEXT_PUBLIC_SUPABASE_URL=https://bhaqkuozinkoktshjlbj.supabase.co
-// NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJoYXFrdW96aW5rb2t0c2hqbGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzOTgyMDMsImV4cCI6MjA3Mzk3NDIwM30.eXTq3QNC34eMjLZ3SObwgPsTN9J3Pmd6tvgQr-1SlBM
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://bhaqkuozinkoktshjlbj.supabase.co';
-// const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJoYXFrdW96aW5rb2t0c2hqbGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzOTgyMDMsImV4cCI6MjA3Mzk3NDIwM30.eXTq3QNC34eMjLZ3SObwgPsTN9J3Pmd6tvgQr-1SlBM';
+if (!supabaseUrl) {
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable');
+}
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+if (!supabaseKey) {
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseKey);

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Connection, Keypair, PublicKey } from '@solana/web3.js';
+import { AnchorProvider } from '@coral-xyz/anchor';
+import QRCode from 'qrcode';
 
 export function PaymentModal({
   datasetId,
@@ -13,8 +16,11 @@ export function PaymentModal({
   onSuccess?: () => void;
   onClose?: () => void;
 }) {
-  const [qrCode, setQrCode] = useState('');
+  const [qrCode, setQrCode] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const [connection, setConnection] = useState<Connection | null>(null);
+  const [keypair, setKeypair] = useState<Keypair | null>(null);
+  const [provider, setProvider] = useState<AnchorProvider | null>(null);
 
   useEffect(() => {
     generateQR();
@@ -100,8 +106,8 @@ export function PaymentModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-md w-full p-6">
         <h2 className="text-xl font-bold mb-4">Complete Payment</h2>
-        
         <div className="text-center mb-4">
+          Pay for dataset access
           <p className="mb-2">Amount: {price / 1e9} SOL</p>
           {qrCode && (
             <img src={qrCode} alt="Payment QR" className="mx-auto" />
@@ -126,7 +132,7 @@ export function PaymentModal({
         </div>
         
         <p className="text-xs text-gray-500 mt-4 text-center">
-          Scan QR with Solana Pay wallet or click "Pay with Phantom"
+          Scan QR with Solana Pay wallet or click &quot;Pay with Phantom&quot;
         </p>
       </div>
     </div>
