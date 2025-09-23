@@ -1,38 +1,12 @@
 # netlify.toml
-
 [build]
+  base = "app"
   command = "yarn build"
-  publish = "app/out"
+  publish = ".next"
 
-  # optional: if you use Next.js 13+ app router, Netlify auto-detects
-  # If you're exporting static HTML instead of SSR, you can use:
-  # command = "yarn build && yarn export"
-  # publish = "app/out"
-
-# ----------------------------------------
-# Environment config for secrets scanning
-# ----------------------------------------
 [build.environment]
-  # Disable secret scan errors for known public envs
-  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_ANON_KEY,NEXT_PUBLIC_RPC_ENDPOINT,PROGRAM_ID"
-  
-  # Skip noisy folders from secret scanning
-  SECRETS_SCAN_OMIT_PATHS = "node_modules,.next,dist,target"
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_RPC_ENDPOINT,PROGRAM_ID"
+  SECRETS_SCAN_OMIT_PATHS = "node_modules,.next,dist,target,idl.json"
 
-  # Optional: disable scanning entirely (last resort)
-  # SECRETS_SCAN_ENABLED = "false"
-
-# ----------------------------------------
-# Next.js / Edge Functions settings
-# ----------------------------------------
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# ----------------------------------------
-# Redirects (if using app router or API routes)
-# ----------------------------------------
-# Example: force all traffic through Next.js
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
