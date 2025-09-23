@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { AnchorProvider } from '@coral-xyz/anchor';
 import QRCode from 'qrcode';
+import { projectCompilationEventsSubscribe } from 'next/dist/build/swc/generated-native';
 
 export function PaymentModal({
   datasetId,
@@ -60,7 +61,7 @@ export function PaymentModal({
       await window.solana.connect();
 
       // Create transaction
-      const connection = new (window as any).solanaWeb3.Connection('https://api.devnet.solana.com');
+      const connection = new (window as any).solanaWeb3.Connection(process.env.NEXT_PUBLIC_RPC_ENDPOINT!);
       const transaction = new (window as any).solanaWeb3.Transaction().add(
         (window as any).solanaWeb3.SystemProgram.transfer({
           fromPubkey: window.solana.publicKey,

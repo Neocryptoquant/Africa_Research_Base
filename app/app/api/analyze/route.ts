@@ -18,7 +18,7 @@ if (!process.env.PROGRAM_ID) throw new Error('PROGRAM_ID not set');
 if (!process.env.ANCHOR_WALLET) console.warn('ANCHOR_WALLET not set, using generated keypair');
 
 const groqClient = new Groq({ apiKey: process.env.GROQ_API_KEY! });
-const connection = new Connection('https://api.devnet.solana.com');
+const connection = new Connection(process.env.NEXT_PUBLIC_RPC_ENDPOINT!);
 
 let keypair: Keypair;
 if (process.env.ANCHOR_WALLET) {

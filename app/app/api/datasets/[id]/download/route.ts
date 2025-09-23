@@ -30,7 +30,7 @@ export async function POST(
     const skipPaymentForDemo = true;
 
     if (!skipPaymentForDemo && dataset.price_lamports > 0) {
-      const connection = new Connection('https://api.devnet.solana.com');
+      const connection = new Connection(process.env.NEXT_PUBLIC_RPC_ENDPOINT!);
       
       try {
         const tx = await connection.getTransaction(transactionSignature, {
