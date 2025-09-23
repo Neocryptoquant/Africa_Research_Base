@@ -93,7 +93,7 @@ export function DatasetAnalytics({ datasets }: DatasetAnalyticsProps) {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ field, percent }) => `${field} ${(percent * 100).toFixed(0)}%`}
+                label={({ field, percent }) => `${field} ${(percent as number * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="datasets"
