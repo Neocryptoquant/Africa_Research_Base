@@ -1,4 +1,6 @@
-export const runtime = "edge";
+// export const runtime = "edge";
+export const runtime = "node.js";
+
 
 import { NextRequest, NextResponse } from 'next/server';
 import Papa from 'papaparse';

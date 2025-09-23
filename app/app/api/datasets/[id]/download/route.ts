@@ -1,5 +1,7 @@
 // Dataset Download | Valid Endpoint!!!
-export const runtime = "edge";
+// export const runtime = "edge";
+export const runtime = "node.js";
+
 // app/api/datasets/[id]/download/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Connection, PublicKey } from '@solana/web3.js';
