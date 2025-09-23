@@ -1,5 +1,5 @@
 // Payment QR Code Generator | Valid Endpoint!!!
-export const runtime = "node.js";
+// export const runtime = "node.js";
 
 import { NextRequest, NextResponse } from 'next/server';
 import QRCode from 'qrcode';

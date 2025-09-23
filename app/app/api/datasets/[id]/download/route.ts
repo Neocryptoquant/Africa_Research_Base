@@ -1,6 +1,6 @@
 // Dataset Download | Valid Endpoint!!!
 // export const runtime = "edge";
-export const runtime = "node.js";
+// export const runtime = "node.js";
 
 // app/api/datasets/[id]/download/route.ts
 import { NextRequest, NextResponse } from 'next/server';

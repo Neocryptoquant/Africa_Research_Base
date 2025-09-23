@@ -1,6 +1,7 @@
 // Dataset Details | Valid Endpoint!!!
 // export const runtime = "edge";
-export const runtime = "node.js";
+// export const runtime = "node.js";
+
 
 
 import { NextRequest, NextResponse } from 'next/server';

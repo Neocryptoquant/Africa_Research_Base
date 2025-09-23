@@ -1,5 +1,5 @@
 // Search and Discovery of Datasets | Valid  Endpoint!!!
-export const runtime = "node.js";
+// export const runtime = "node.js";
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../lib/supabase';
