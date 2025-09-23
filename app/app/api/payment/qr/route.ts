@@ -1,4 +1,5 @@
 // Payment QR Code Generator | Valid Endpoint!!!
+export const runtime = "edge";
 
 import { NextRequest, NextResponse } from 'next/server';
 import QRCode from 'qrcode';

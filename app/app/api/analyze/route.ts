@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { NextRequest, NextResponse } from 'next/server';
 import Papa from 'papaparse';
 import { read, utils } from 'xlsx';
