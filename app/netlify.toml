@@ -1,7 +1,7 @@
 # netlify.toml
 [build]
   base = "app"
-  command = "yarn install --frozen-lockfile && yarn build"
+  command = "yarn install && yarn build"
   publish = ".next"
 
 [build.environment]
