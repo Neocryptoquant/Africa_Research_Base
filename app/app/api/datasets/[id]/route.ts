@@ -7,15 +7,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabase';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
   try {
     const { data, error } = await supabase
       .from('datasets')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error || !data) {
@@ -28,7 +28,7 @@ export async function GET(
     await supabase
       .from('datasets')
       .update({ download_count: (data.download_count || 0) + 1 })
-      .eq('id', params.id);
+      .eq('id', id);
 
     return NextResponse.json(data);
 

@@ -1,24 +1,21 @@
-// Dataset Download | Valid Endpoint!!!
-// export const runtime = "edge";
-// export const runtime = "node.js";
+// export const runtime = "edge"; // Comment out if needed
+export const runtime = 'nodejs';
 
-// app/api/datasets/[id]/download/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import { supabase } from '../../../../lib/supabase';
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
   try {
-    const { transactionSignature, buyerAddress } = await req.json();
+    const { transactionSignature } = await req.json(); // Removed unused buyerAddress
 
     // Fetch dataset info
     const { data: dataset, error } = await supabase
       .from('datasets')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error || !dataset) {
@@ -28,7 +25,6 @@ export async function POST(
     }
 
     // For demo/hackathon, skip payment verification
-    // In production, verify the transaction here
     const skipPaymentForDemo = true;
 
     if (!skipPaymentForDemo && dataset.price_lamports > 0) {
@@ -49,6 +45,7 @@ export async function POST(
         // This is simplified - in production, check the actual transfer instruction
         
       } catch (txError) {
+        console.error('Transaction verification error:', txError); // Use txError
         return NextResponse.json({ 
           error: 'Payment verification failed' 
         }, { status: 400 });
@@ -59,7 +56,7 @@ export async function POST(
     const { data: fileData, error: fileError } = await supabase
       .from('dataset_files')
       .select('file_data')
-      .eq('dataset_id', params.id)
+      .eq('dataset_id', id)
       .single();
 
     if (fileError || !fileData) {
@@ -75,7 +72,7 @@ export async function POST(
         download_count: (dataset.download_count || 0) + 1,
         updated_at: new Date().toISOString()
       })
-      .eq('id', params.id);
+      .eq('id', id);
 
     // Return file data
     return NextResponse.json({

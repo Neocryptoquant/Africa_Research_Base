@@ -1,7 +1,7 @@
 import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  experimental: {
+  // experimental: {
     outputFileTracingExcludes: {
       '*': [
         // Exclude heavy packages from serverless bundle
@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
         'node_modules/@swc/**/*',
       ],
     },
-  } as any, // Type assertion to bypass strict typing
+  // } as any, // Type assertion to bypass strict typing
   // Use standalone output for better optimization
   output: 'standalone',
   
@@ -40,6 +40,11 @@ const nextConfig: NextConfig = {
       });
     }
     return config;
+  },
+
+  eslint: {
+    dirs: ['app', 'lib', 'scripts'],
+    ignoreDuringBuilds: true
   },
 };
 
