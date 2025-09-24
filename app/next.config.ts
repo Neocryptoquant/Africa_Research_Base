@@ -1,4 +1,6 @@
-module.exports = {
+import { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
   experimental: {
     outputFileTracingExcludes: {
       '*': [
@@ -19,7 +21,7 @@ module.exports = {
         'node_modules/@swc/**/*',
       ],
     },
-  },
+  } as any, // Type assertion to bypass strict typing
   // Use standalone output for better optimization
   output: 'standalone',
   
@@ -39,4 +41,6 @@ module.exports = {
     }
     return config;
   },
-}
+};
+
+export default nextConfig;
