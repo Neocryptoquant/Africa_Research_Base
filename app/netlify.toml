@@ -1,7 +1,7 @@
 # netlify.toml
 [build]
   base = "app"
-  command = "yarn build"
+  command = "yarn install --frozen-lockfile && yarn build"
   publish = ".next"
 
 [build.environment]
@@ -10,3 +10,8 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+  
+[build.environment]
+  NODE_VERSION = "18"
+  NODE_OPTIONS = "--max-old-space-size=8192"
+  NODE_ENV = "production"
