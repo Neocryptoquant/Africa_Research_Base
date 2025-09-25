@@ -13,9 +13,10 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-
-[[functions]]
+[functions]
   directory = ".netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["@swc/helpers"]  
+
+[functions.build]
+  external_node_modules = ["@swc/helpers"]
   
