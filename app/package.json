@@ -16,6 +16,7 @@
     "@langchain/core": "^0.3.77",
     "@langchain/groq": "^0.2.4",
     "@supabase/supabase-js": "^2.57.4",
+    "@swc/helpers": "^0.5.17",
     "bn.js": "^5.2.2",
     "bs58": "^6.0.0",
     "crypto-js": "^4.2.0",
