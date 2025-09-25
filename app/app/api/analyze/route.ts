@@ -15,6 +15,7 @@ import { Uploader } from "@irys/upload";
 import { Solana } from "@irys/upload-solana";
 import QRCode from 'qrcode';
 import bs58 from 'bs58';
+const hash = (CryptoJS as any).SHA256('your data').toString();
 
 // Validate env
 if (!process.env.GROQ_API_KEY) throw new Error('GROQ_API_KEY not set');
@@ -133,7 +134,7 @@ export async function POST(req: NextRequest) {
     }, 0) / colCount * 100;
 
     // Hash (32 bytes)
-    const hashHex = CryptoJS.SHA256(buffer.toString()).toString(CryptoJS.enc.Hex);
+    const hashHex = hash.SHA256(buffer.toString()).toString(hash.enc.Hex);
     const hashBytes = new Uint8Array(32);
     for (let i = 0; i < 32; i++) {
       hashBytes[i] = parseInt(hashHex.substr(i * 2, 2), 16);
