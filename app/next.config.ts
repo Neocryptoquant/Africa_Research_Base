@@ -2,6 +2,7 @@ import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // experimental: {
+  outputFileTracingRoot: './',
     outputFileTracingExcludes: {
       '*': [
         // Exclude heavy packages from serverless bundle
