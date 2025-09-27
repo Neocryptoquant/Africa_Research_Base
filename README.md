@@ -2,9 +2,6 @@
 
 Great things, they say, begin with an idea. This is a great idea. 
 
-
-# 🌍 Africa Data Bank
-
 > **Turning African research data into a shared continental resource**
 
 [![Built on Solana](https://img.shields.io/badge/Built%20on-Solana-green)](https://solana.com/)
@@ -21,21 +18,24 @@ Great things, they say, begin with an idea. This is a great idea.
 
 **For Researchers:**
 - 📤 **Upload datasets** with drag-and-drop simplicity
-- 🤖 **AI analysis** extracts metadata in 60 seconds  
+- 🤖 **AI analysis** extracts metadata in 60 seconds
+- 📊 **Analytics dashboards** for dataset usage and reputation
 - 🔍 **Discover similar data** from across African institutions
-- 📊 **Get attribution** for every download and citation
+- 📊 **Get attribution** for every download and citation (on-chain)
 
 **For the Ecosystem:**
 - 🏛️ **Cross-institutional** collaboration without silos
 - 🔗 **Transparent attribution** via Solana blockchain
 - 📈 **Impact tracking** for research contributions
+- 🧩 **Modular smart contract logic** for extensibility
+- 🛡️ **Custom error codes** for robust validation
 - 🌍 **Continental knowledge base** that grows with every upload
 
 ---
 
 ## 🚀 Live Demo
 
-**Try it out:** [africadatabank.xyz](https://africadatabank.xyz) *(Coming Soon)*
+**Try it out:** [africaresearchbase.netlify.com](https://africaresearchbase.netlify.com) 
 
 **Demo Flow:**
 1. Upload your research dataset (CSV/Excel)
@@ -48,10 +48,11 @@ Great things, they say, begin with an idea. This is a great idea.
 ## 🛠️ Tech Stack
 
 - **Frontend:** Next.js + TypeScript + TailwindCSS
-- **Blockchain:** Solana (smart contracts + attribution)
+- **Blockchain:** Solana (Anchor smart contracts, modular instructions, on-chain reputation)
 - **Storage:** Google Drive API (cost-optimized hybrid)
-- **AI:** Groq + LangChain (real-time analysis)
+- **AI:** Groq + LangChain (real-time analysis, metadata extraction)
 - **Database:** Supabase (search + indexing)
+- **Analytics:** Custom dashboards for dataset usage and reputation
 
 ---
 
@@ -87,11 +88,6 @@ NEXT_PUBLIC_SOLANA_NETWORK=devnet
 NEXT_PUBLIC_RPC_ENDPOINT=https://api.devnet.solana.com
 SOLANA_PRIVATE_KEY=your_wallet_private_key
 
-# Google Drive API
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_REFRESH_TOKEN=your_refresh_token
-
 # Groq AI
 GROQ_API_KEY=your_groq_api_key
 
@@ -102,21 +98,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ### API Keys Setup
 
-1. **Google Drive API:**
-   ```bash
-   # Go to Google Cloud Console
-   # Enable Google Drive API
-   # Create OAuth 2.0 credentials
-   # Generate refresh token using OAuth playground
-   ```
-
-2. **Groq API:**
+1. **Groq API:**
    ```bash
    # Sign up at console.groq.com
    # Create API key in dashboard
    ```
 
-3. **Supabase:**
+2. **Supabase:**
    ```bash
    # Create project at supabase.com
    # Copy URL and anon key from settings
@@ -127,37 +115,31 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```bash
 # Start the development server
 yarn dev
-
-# Deploy smart contracts (separate terminal)
-cd programs
-anchor build
-anchor deploy --provider.cluster devnet
-
-# Run database migrations
-yarn db:migrate
-
-# Seed development data
-yarn db:seed
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ---
 
+
 ## 📁 Project Structure
 
 ```
-africa-data-bank/
-├── src/
-│   ├── components/          # React components
-│   ├── pages/              # Next.js pages
-│   ├── hooks/              # Custom React hooks
-│   ├── utils/              # Helper functions
-│   └── lib/                # External service configs
-├── programs/               # Solana smart contracts
-├── public/                 # Static assets
-├── prisma/                 # Database schema
-└── docs/                   # Documentation
+africa_research_base/
+├── app/
+│   ├── components/          # React components (FileUpload, DatasetAnalytics, PaymentModal, etc.)
+│   ├── hooks/               # Custom React hooks (useDatasets, etc.)
+│   ├── api/                 # API routes (Groq, Solana, file parsing)
+├── programs/
+│   └── africa_research_base/
+│       ├── src/
+│       │   ├── instructions/ # Modular smart contract logic (create_dataset.rs, update_reputation.rs, etc.)
+│       │   ├── state/        # State structs (dataset.rs, reputation.rs, registry.rs)
+│       │   └── error.rs      # Custom error codes
+│       └── tests/            # Anchor TypeScript tests
+├── migrations/               # Deployment scripts
+├── docs/                     # Documentation & diagrams
+└── idl/                      # Anchor IDL files
 ```
 
 ---
@@ -174,60 +156,33 @@ yarn test:integration
 # Test smart contracts
 cd programs && anchor test
 
-# Run AI pipeline tests
-yarn test:ai
 ```
 
 ---
 
 ## 🚢 Deployment
 
-### Frontend (Vercel)
+
+### Frontend (Netlify)
 ```bash
 # Build for production
 yarn build
 
-# Deploy to Vercel
-vercel --prod
+# Deploy to Netlify
+# Push your repo to GitHub, then connect it to Netlify at https://app.netlify.com/ and set build command to 'yarn build' and publish directory to 'app/app' or your frontend folder.
 ```
-
-### Smart Contracts (Mainnet)
-```bash
-# Deploy to mainnet (when ready)
-anchor deploy --provider.cluster mainnet-beta
-```
-
-### Environment Variables
-Set the same variables in your deployment platform (Vercel, Railway, etc.)
-
----
-
-## 📖 API Documentation
-
-### Upload Dataset
-```typescript
-POST /api/datasets/upload
-Content-Type: multipart/form-data
-
-{
-  file: File,
-  tags?: string[],
-  description?: string
-}
-```
-
 ### Search Datasets
 ```typescript
 GET /api/datasets/search?q=climate&field=environment
 
 Response: {
-  datasets: Dataset[],
-  total: number,
-  page: number
+   datasets: Dataset[],
+   total: number,
+   page: number
 }
 ```
 
-[Full API docs →](./docs/api.md)
+**Note:** All uploads are analyzed in real-time by AI, attributed on-chain, and indexed for search. See [Full API docs →](./docs/api.md)
 
 ---
 
@@ -235,7 +190,7 @@ Response: {
 
 We're building this for the African research community! Here's how you can help:
 
-1. **🐛 Report bugs** - Found something broken? [Open an issue](https://github.com/neocryptoquant/africa-data-bank/issues)
+1. **🐛 Report bugs** - Found something broken? [Open an issue](https://github.com/neocryptoquant/africa_research_base/issues)
 2. **💡 Suggest features** - Have ideas? We'd love to hear them
 3. **🔧 Submit PRs** - Check our [contributing guide](./CONTRIBUTING.md)
 4. **📊 Share datasets** - Help us test with real research data
@@ -277,7 +232,6 @@ Built during the **Solana x AI Hackathon 2025**
 **Team:**
 - Team Lead: Mbanwusi Francisca - Organization + Lead Researcher
 - Team Technical Lead: Abimbola A.E. - Full-stack + Solana development
-- Domain Experts: [Names] - African academic research experience  
 - Design Lead: Chiemere V. - UI/UX for research workflows
 
 ---
@@ -286,16 +240,6 @@ Built during the **Solana x AI Hackathon 2025**
 
 MIT License - see [LICENSE](./LICENSE) for details.
 
----
-
-## 🙋‍♀️ Support
-
-- **Discord:** [Join our community](https://discord.gg/africadatabank)
-- **Email:** [team@africadatabank.xyz](mailto:team@africadatabank.xyz)
-- **Issues:** [GitHub Issues](https://github.com/Neocryptoquant/africa-data-bank/issues)
-- **Docs:** [Full Documentation](https://docs.africadatabank.xyz)
-
----
 
 **Made with ❤️ for African researchers, by African developers**
 
