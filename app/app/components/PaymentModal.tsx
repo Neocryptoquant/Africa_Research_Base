@@ -52,7 +52,7 @@ export function PaymentModal({
               onSuccess?.();
               onClose?.();
             }}
-            onError={(error) => {
+            onError={(error: any) => {
               console.error('Payment error:', error);
               alert(`Payment failed: ${error}`);
             }}

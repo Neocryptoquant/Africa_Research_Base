@@ -2,6 +2,7 @@
 
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import { WalletReadyState } from '@solana/wallet-adapter-base';
 import { useState, useEffect, useCallback } from 'react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
@@ -11,6 +12,13 @@ export interface EnhancedWalletState {
   publicKey: string | null;
   balance: number | null;
   walletName: string | null;
+}
+
+export interface AvailableWallet {
+  name: string;
+  icon: string;
+  installed: boolean;
+  readyState: WalletReadyState;
 }
 
 export function useEnhancedWallet() {
@@ -54,31 +62,73 @@ export function useEnhancedWallet() {
     }
   }, [publicKey, connection]);
 
-  // Auto-detect and connect to available wallets
+  // Detect available wallets and auto-connect
   const detectAndConnect = useCallback(async () => {
     if (autoConnectAttempted || connected || connecting) return;
     
     setAutoConnectAttempted(true);
     
-    // Check if Phantom is available
-    if (window.solana?.isPhantom) {
-      try {
-        // Try to connect silently if already authorized
-        if (window.solana.isConnected) {
-          console.log('Phantom wallet detected and already connected');
-          return;
-        }
+    // Check for various wallet providers
+    const providers = [
+      { name: 'Phantom', check: () => (window as any).phantom?.solana?.isPhantom },
+      { name: 'Solflare', check: () => (window as any).solflare?.isSolflare },
+      { name: 'Backpack', check: () => (window as any).backpack?.isBackpack },
+      { name: 'Glow', check: () => (window as any).glowSolana?.isGlow },
+      { name: 'Slope', check: () => (window as any).Slope },
+      { name: 'Sollet', check: () => (window as any).sollet },
+    ];
+
+    for (const provider of providers) {
+      if (provider.check()) {
+        console.log(`${provider.name} wallet detected`);
         
-        // Check if we have permission to connect
-        const response = await window.solana.connect({ onlyIfTrusted: true });
-        if (response.publicKey) {
-          console.log('Auto-connected to Phantom wallet');
+        // Try to auto-connect if wallet was previously connected
+        try {
+          const walletProvider = getWalletProvider(provider.name);
+          if (walletProvider?.isConnected) {
+            console.log(`${provider.name} wallet already connected`);
+            return;
+          }
+          
+          // For Phantom, try silent connection
+          if (provider.name === 'Phantom' && walletProvider?.connect) {
+            try {
+              const response = await walletProvider.connect({ onlyIfTrusted: true });
+              if (response?.publicKey) {
+                console.log(`Auto-connected to ${provider.name} wallet`);
+                return;
+              }
+            } catch (error) {
+              // Silent connection failed, that's okay
+            }
+          }
+        } catch (error) {
+          console.log(`Auto-connect failed for ${provider.name}:`, error);
         }
-      } catch (error) {
-        console.log('Auto-connect failed, user needs to manually connect');
       }
     }
   }, [autoConnectAttempted, connected, connecting]);
+
+  // Get wallet provider from window object
+  const getWalletProvider = useCallback((walletName: string) => {
+    const windowObj = window as any;
+    switch (walletName.toLowerCase()) {
+      case 'phantom':
+        return windowObj.phantom?.solana;
+      case 'solflare':
+        return windowObj.solflare;
+      case 'backpack':
+        return windowObj.backpack;
+      case 'glow':
+        return windowObj.glowSolana;
+      case 'slope':
+        return windowObj.Slope;
+      case 'sollet':
+        return windowObj.sollet;
+      default:
+        return null;
+    }
+  }, []);
 
   // Connect wallet with modal
   const connectWallet = useCallback(async () => {
@@ -115,6 +165,16 @@ export function useEnhancedWallet() {
     }
   }, [wallets, select]);
 
+  // Get installed wallets
+  const getInstalledWallets = useCallback((): AvailableWallet[] => {
+    return wallets.map(w => ({
+      name: w.adapter.name,
+      icon: w.adapter.icon,
+      installed: w.readyState === WalletReadyState.Installed,
+      readyState: w.readyState
+    }));
+  }, [wallets]);
+
   // Effects
   useEffect(() => {
     fetchBalance();
@@ -124,20 +184,35 @@ export function useEnhancedWallet() {
     detectAndConnect();
   }, [detectAndConnect]);
 
-  // Listen for account changes
+  // Listen for account changes (with proper type safety)
   useEffect(() => {
-    if (window.solana) {
-      const handleAccountChanged = () => {
-        fetchBalance();
-      };
+    const handleAccountChanged = () => {
+      fetchBalance();
+    };
 
-      window.solana.on?.('accountChanged', handleAccountChanged);
+    // Listen to wallet adapter events
+    if (wallet?.adapter) {
+      wallet.adapter.on('connect', handleAccountChanged);
+      wallet.adapter.on('disconnect', () => setBalance(null));
       
       return () => {
-        window.solana.off?.('accountChanged', handleAccountChanged);
+        wallet.adapter.off('connect', handleAccountChanged);
+        wallet.adapter.off('disconnect', () => setBalance(null));
       };
     }
-  }, [fetchBalance]);
+
+    // Also listen to direct wallet provider events if available
+    const provider = getWalletProvider(wallet?.adapter.name || '');
+    if (provider && typeof provider.on === 'function') {
+      provider.on('accountChanged', handleAccountChanged);
+      
+      return () => {
+        if (typeof provider.off === 'function') {
+          provider.off('accountChanged', handleAccountChanged);
+        }
+      };
+    }
+  }, [fetchBalance, wallet, getWalletProvider]);
 
   return {
     walletState,
@@ -145,25 +220,13 @@ export function useEnhancedWallet() {
     disconnectWallet,
     selectWallet,
     fetchBalance,
-    availableWallets: wallets.map(w => ({
-      name: w.adapter.name,
-      icon: w.adapter.icon,
-      installed: w.readyState === 'Installed'
-    })),
-    connection
+    availableWallets: getInstalledWallets(),
+    connection,
+    // Additional utility functions
+    isWalletInstalled: (walletName: string) => {
+      const provider = getWalletProvider(walletName);
+      return !!provider;
+    },
+    getWalletProvider
   };
-}
-
-// Extend window interface for Phantom wallet
-declare global {
-  interface Window {
-    solana?: {
-      isPhantom?: boolean;
-      isConnected?: boolean;
-      connect: (options?: { onlyIfTrusted?: boolean }) => Promise<{ publicKey: { toBase58(): string } }>;
-      disconnect: () => Promise<void>;
-      on?: (event: string, callback: () => void) => void;
-      off?: (event: string, callback: () => void) => void;
-    };
-  }
 }

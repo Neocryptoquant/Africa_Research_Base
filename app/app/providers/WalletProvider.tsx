@@ -3,16 +3,19 @@
 import React, { useMemo } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { 
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  // BackpackWalletAdapter,
+  // SlopeWalletAdapter,
+  // SolletWalletAdapter,
+  TorusWalletAdapter
+} from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 
-// Import wallet adapter CSS - wrapped in try-catch to handle build issues
-try {
-  require('@solana/wallet-adapter-react-ui/styles.css');
-} catch (e) {
-  console.warn('Could not load wallet adapter styles:', e);
-}
+// Import wallet adapter CSS
+import '@solana/wallet-adapter-react-ui/styles.css';
 
 export function SolanaWalletProvider({ children }: { children: React.ReactNode }) {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'
@@ -23,10 +26,16 @@ export function SolanaWalletProvider({ children }: { children: React.ReactNode }
 
   const wallets = useMemo(
     () => [
+      // Popular Solana wallets
       new PhantomWalletAdapter(),
-      // Add more wallet adapters as needed
+      new SolflareWalletAdapter({ network }),
+      // new BackpackWalletAdapter(),
+      // new GlowWalletAdapter(),
+      // new SlopeWalletAdapter(),
+      // new SolletWalletAdapter({ network }),
+      new TorusWalletAdapter(),
     ],
-    []
+    [network]
   );
 
   return (

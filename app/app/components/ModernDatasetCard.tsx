@@ -1,13 +1,14 @@
 "use client"
 
 import React from 'react';
-import { Download, Star, Eye, Calendar, Database, FileText, Users } from 'lucide-react';
+import { Download, Star, Calendar, FileText, Eye, DollarSign, Database } from 'lucide-react';
 import { Dataset } from '../hooks/useDatasets';
 
 interface ModernDatasetCardProps {
   dataset: Dataset;
   onPurchase: (dataset: Dataset) => void;
   onView?: (dataset: Dataset) => void;
+  isOwner?: boolean;
 }
 
 const fieldColors = {
@@ -21,7 +22,7 @@ const fieldColors = {
   'Other': 'from-amber-400 to-orange-600'
 };
 
-export function ModernDatasetCard({ dataset, onPurchase, onView }: ModernDatasetCardProps) {
+export function ModernDatasetCard({ dataset, onPurchase, onView, isOwner }: ModernDatasetCardProps) {
   const fieldColor = fieldColors[dataset.field as keyof typeof fieldColors] || fieldColors['Other'];
   const priceInSol = dataset.price_lamports / 1e9;
   const fileSizeInMB = (dataset.file_size / 1024 / 1024).toFixed(2);
@@ -122,7 +123,7 @@ export function ModernDatasetCard({ dataset, onPurchase, onView }: ModernDataset
           </div>
           
           <div className="flex space-x-2">
-            {onView && (
+            {onView && !isOwner && (
               <button
                 onClick={() => onView(dataset)}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
@@ -131,19 +132,36 @@ export function ModernDatasetCard({ dataset, onPurchase, onView }: ModernDataset
                 <Eye className="w-4 h-4" />
               </button>
             )}
-            <button
-              onClick={() => onPurchase(dataset)}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 ${
-                priceInSol === 0
-                  ? 'bg-green-600 hover:bg-green-700 text-white'
-                  : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
-              }`}
-            >
+            {isOwner ? (
               <div className="flex items-center space-x-2">
-                <Download className="w-4 h-4" />
-                <span>{priceInSol === 0 ? 'Download' : 'Purchase'}</span>
+                <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                  Your Dataset
+                </span>
+                <button
+                  onClick={() => onView?.(dataset)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold transition-all"
+                >
+                  <div className="flex items-center space-x-2">
+                    <Eye className="w-4 h-4" />
+                    <span>View</span>
+                  </div>
+                </button>
               </div>
-            </button>
+            ) : (
+              <button
+                onClick={() => onPurchase(dataset)}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 ${
+                  priceInSol === 0
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <Download className="w-4 h-4" />
+                  <span>{priceInSol === 0 ? 'Download' : 'Purchase'}</span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </div>

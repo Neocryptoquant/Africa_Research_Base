@@ -6,8 +6,10 @@ import { useState, useEffect } from 'react';
 export interface Dataset {
   id: string;
   file_name: string;
+  title?: string;
   description: string;
-  field: string;
+  field?: string;
+  research_field?: string;
   tags: string[];
   row_count: number;
   column_count: number;
@@ -17,6 +19,15 @@ export interface Dataset {
   price_lamports: number;
   created_at: string;
   contributor_address?: string;
+  topics?: string[];
+  methodology?: string;
+  geographic_scope?: string;
+  timeframe?: string;
+  sample_size?: number;
+  word_count?: number;
+  page_count?: number;
+  language?: string;
+  data_types?: string[];
 }
 
 export interface DatasetFilters {
@@ -197,7 +208,12 @@ export function useDatasets(filters: DatasetFilters = {}) {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      let filteredData = [...mockDatasets];
+      // Combine mock data with user-uploaded data from localStorage
+      const userDatasets = typeof window !== 'undefined' 
+        ? JSON.parse(localStorage.getItem('userDatasets') || '[]')
+        : [];
+      
+      let filteredData = [...userDatasets, ...mockDatasets];
 
       // Apply filters
       if (filters.search) {
@@ -205,12 +221,14 @@ export function useDatasets(filters: DatasetFilters = {}) {
         filteredData = filteredData.filter(dataset => 
           dataset.file_name.toLowerCase().includes(searchLower) ||
           dataset.description.toLowerCase().includes(searchLower) ||
-          dataset.tags.some(tag => tag.toLowerCase().includes(searchLower))
+          dataset.tags.some((tag: string) => tag.toLowerCase().includes(searchLower))
         );
       }
 
       if (filters.field) {
-        filteredData = filteredData.filter(dataset => dataset.field === filters.field);
+        filteredData = filteredData.filter(dataset => 
+          dataset.field === filters.field || dataset.research_field === filters.field
+        );
       }
 
       if (filters.minQuality !== undefined) {

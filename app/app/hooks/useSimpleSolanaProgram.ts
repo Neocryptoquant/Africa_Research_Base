@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from 'react';
-import { useWallet } from './useWallet';
+import { useEnhancedWallet } from './useEnhancedWallet';
 
 export interface DatasetMetadata {
   title: string;
@@ -30,7 +30,7 @@ export interface CreateDatasetParams {
 }
 
 export function useSimpleSolanaProgram() {
-  const { walletState } = useWallet();
+  const { walletState } = useEnhancedWallet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
