@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SolanaWalletProvider } from "./providers/WalletProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +20,16 @@ export const metadata: Metadata = {
   description: "A decentralized platform for African research data management and collaboration on Solana blockchain",
   keywords: ["Africa", "Research", "Solana", "Blockchain", "Data", "Collaboration"],
   authors: [{ name: "Africa Research Base Team" }],
-  viewport: "width=device-width, initial-scale=1",
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -32,7 +42,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-full bg-background text-foreground`}
       >
-        {children}
+        <SolanaWalletProvider>
+          {children}
+        </SolanaWalletProvider>
       </body>
     </html>
   );

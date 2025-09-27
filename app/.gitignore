@@ -42,5 +42,4 @@ next-env.d.ts
 
 #others
 idl.json
-seed-demo-data.json
-
+seed-demo-data.ts

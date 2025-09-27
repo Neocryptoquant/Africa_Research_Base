@@ -1,6 +1,8 @@
 import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Enable React Strict Mode
+  reactStrictMode: true,
   // experimental: {
   outputFileTracingRoot: './',
     outputFileTracingExcludes: {
@@ -46,6 +48,17 @@ const nextConfig: NextConfig = {
   eslint: {
     dirs: ['app', 'lib', 'scripts'],
     ignoreDuringBuilds: true
+  },
+  
+  // Configure images
+  images: {
+    domains: ['localhost'], // Allow localhost for development
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
 };
 

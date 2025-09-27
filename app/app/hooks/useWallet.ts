@@ -1,6 +1,21 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+
+declare global {
+  interface Window {
+    solana?: {
+      isPhantom?: boolean;
+      connect: () => Promise<{ publicKey: { toString(): string } }>;
+      disconnect: () => Promise<void>;
+      isConnected: boolean;
+      publicKey: { toString(): string } | null;
+      on?: (event: string, callback: () => void) => void;
+      off?: (event: string, callback: () => void) => void;
+    };
+  }
+}
 
 export interface WalletState {
   connected: boolean;
@@ -16,47 +31,69 @@ export function useWallet() {
   });
   const [connecting, setConnecting] = useState(false);
 
-  useEffect(() => {
-    checkIfWalletIsConnected();
-  }, []);
+  // Use devnet for development
+  const connection = new Connection('https://api.devnet.solana.com');
 
-  const checkIfWalletIsConnected = async () => {
-    try {
-      if (window.solana?.isPhantom) {
-        // Check if already connected without prompting
-        if (window.solana.isConnected && window.solana.publicKey) {
-          setWalletState({
-            connected: true,
-            publicKey: window.solana.publicKey.toString(),
-            balance: null // Would fetch actual balance in production
-          });
-        }
+  const updateWalletState = useCallback(async (publicKeyString: string | null) => {
+    if (publicKeyString) {
+      try {
+        const publicKey = new PublicKey(publicKeyString);
+        const balance = await connection.getBalance(publicKey);
+        setWalletState({
+          connected: true,
+          publicKey: publicKeyString,
+          balance: balance / LAMPORTS_PER_SOL
+        });
+      } catch (error) {
+        console.error('Failed to fetch balance:', error);
+        setWalletState({
+          connected: true,
+          publicKey: publicKeyString,
+          balance: null
+        });
       }
-    } catch (error) {
-      // Wallet not connected or not available
-      console.error('Wallet connection check failed:', error);
+    } else {
+      setWalletState({
+        connected: false,
+        publicKey: null,
+        balance: null
+      });
     }
-  };
+  }, [connection]);
+
+  useEffect(() => {
+    const checkIfWalletIsConnected = async () => {
+      try {
+        if (window.solana?.isPhantom) {
+          if (window.solana.isConnected && window.solana.publicKey) {
+            await updateWalletState(window.solana.publicKey.toString());
+          }
+        }
+      } catch (error) {
+        console.error('Wallet connection check failed:', error);
+      }
+    };
+
+    checkIfWalletIsConnected();
+
+    // Simplified event handling - will be handled by manual checks
+  }, [updateWalletState]);
 
   const connectWallet = async () => {
     if (!window.solana) {
-      alert('Please install Phantom wallet!');
+      window.open('https://phantom.app/', '_blank');
       return;
     }
 
     if (!window.solana.isPhantom) {
-      alert('Please install Phantom wallet!');
+      window.open('https://phantom.app/', '_blank');
       return;
     }
 
     setConnecting(true);
     try {
       const response = await window.solana.connect();
-      setWalletState({
-        connected: true,
-        publicKey: response.publicKey.toString(),
-        balance: null // Would fetch actual balance in production
-      });
+      await updateWalletState(response.publicKey.toString());
     } catch (error) {
       console.error('Wallet connection failed:', error);
       alert('Failed to connect wallet. Please try again.');
@@ -67,16 +104,23 @@ export function useWallet() {
 
   const disconnectWallet = async () => {
     try {
-      if (window.solana) {
+      if (window.solana && window.solana.isConnected) {
         await window.solana.disconnect();
-        setWalletState({
-          connected: false,
-          publicKey: null,
-          balance: null
-        });
       }
+      // Always update state to disconnected, even if wallet disconnect fails
+      setWalletState({
+        connected: false,
+        publicKey: null,
+        balance: null
+      });
     } catch (error) {
       console.error('Wallet disconnection failed:', error);
+      // Still update state to disconnected
+      setWalletState({
+        connected: false,
+        publicKey: null,
+        balance: null
+      });
     }
   };
 
@@ -84,6 +128,7 @@ export function useWallet() {
     walletState,
     connecting,
     connectWallet,
-    disconnectWallet
+    disconnectWallet,
+    connection
   };
 }
