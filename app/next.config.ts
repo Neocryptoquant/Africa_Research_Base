@@ -9,6 +9,18 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
+  // Webpack optimizations
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Exclude client-only packages from server bundle
+      config.externals.push({
+        'lucide-react': 'lucide-react',
+        'recharts': 'recharts',
+      });
+    }
+    return config;
+  },
+
   eslint: {
     dirs: ['app', 'lib', 'scripts'],
     ignoreDuringBuilds: true

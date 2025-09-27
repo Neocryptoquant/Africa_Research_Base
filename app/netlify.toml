@@ -10,6 +10,5 @@
   NODE_OPTIONS = "--max-old-space-size=8192"
   NODE_ENV = "production"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Removed @netlify/plugin-nextjs - Netlify automatically uses OpenNext adapter for Next.js 13.5+
   
