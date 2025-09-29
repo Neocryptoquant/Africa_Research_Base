@@ -112,12 +112,12 @@ export function ModernDatasetCard({ dataset, onPurchase, onView, isOwner }: Mode
         {/* Price and Action */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex flex-col">
-            <span className="text-2xl font-bold text-gray-900">
-              {priceInSol === 0 ? 'Free' : `${priceInSol} SOL`}
+            <span className="text-lg font-bold text-gray-900">
+              {priceInSol === 0 ? 'Free' : `$${(dataset.price_lamports / 1000000).toFixed(0)} USDC`}
             </span>
             {priceInSol > 0 && (
               <span className="text-xs text-gray-500">
-                ≈ ${(priceInSol * 150).toFixed(2)} USD
+                or {(dataset.price_lamports / 5000000).toFixed(0)} $ARB
               </span>
             )}
           </div>

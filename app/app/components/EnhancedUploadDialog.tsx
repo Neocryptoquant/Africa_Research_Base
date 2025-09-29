@@ -135,7 +135,7 @@ export function EnhancedUploadDialog({ isOpen, onClose, onUpload, onSuccess }: E
       file_size: selectedFile?.size || 0,
       quality_score: analysisResults.qualityScore,
       download_count: 0,
-      price_lamports: monetization === 'paid' ? Math.floor(parseFloat(price) * 1000000000) : 0,
+      price_lamports: monetization === 'paid' ? Math.floor(parseFloat(price) * 1000000) : 0,
       created_at: new Date().toISOString(),
       contributor_address: '2QkJLTKTtYFHS6xir1TEXLSdajM7r1Djf96JogKnRGSR'
     };
@@ -168,7 +168,7 @@ export function EnhancedUploadDialog({ isOpen, onClose, onUpload, onSuccess }: E
                 <div>Quality Score: <span className="font-medium text-amber-700">{analysisResults.qualityScore}%</span></div>
                 <div>Word Count: <span className="font-medium text-amber-700">{analysisResults.wordCount.toLocaleString()}</span></div>
                 <div>Pages: <span className="font-medium text-amber-700">{analysisResults.pageCount}</span></div>
-                <div>Monetization: <span className="font-medium text-amber-700">{monetization === 'free' ? 'Free Access' : `${price} SOL`}</span></div>
+                <div>Monetization: <span className="font-medium text-amber-700">{monetization === 'free' ? 'Free Access' : `$${price} USDC`}</span></div>
               </div>
             </div>
           </div>
@@ -272,12 +272,19 @@ export function EnhancedUploadDialog({ isOpen, onClose, onUpload, onSuccess }: E
 
               {monetization === 'paid' && (
                 <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
-                  <label className="block text-sm font-medium mb-2 text-gray-700">Price (SOL) *</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">Price (USDC) *</label>
                   <div className="relative">
-                    <input type="number" step="0.001" min="0.001" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full px-4 py-3 pr-16 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" required disabled={uploading} />
-                    <span className="absolute right-4 top-3 text-gray-500 font-medium">SOL</span>
+                    <input type="number" step="1" min="1" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full px-4 py-3 pr-20 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" required disabled={uploading} />
+                    <span className="absolute right-4 top-3 text-gray-500 font-medium">USDC</span>
                   </div>
-                  <p className="text-xs text-amber-600 mt-2">Minimum: 0.001 SOL (~$0.02)</p>
+                  <div className="mt-2 space-y-1">
+                    <p className="text-xs text-amber-600">Minimum: $1 USDC</p>
+                    {price && (
+                      <p className="text-xs text-gray-600">
+                        Equivalent: {(parseFloat(price) / 50).toFixed(1)} $ARB
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

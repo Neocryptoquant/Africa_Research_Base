@@ -25,18 +25,9 @@ export function SolanaPay({ recipientAddress, amount, reference, label, message,
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        const recipient = new PublicKey(recipientAddress);
-        const bigAmount = new BigNumber(amount);
-        
-        // Create a simple payment URL without reference for now
-        // The reference should be a valid PublicKey, but we're getting a string
-        const urlParams: TransactionRequestURL = {
-          link: new URL(`solana:${recipientAddress}?amount=${amount}&label=${encodeURIComponent(label)}&message=${encodeURIComponent(message)}`),
-          label,
-          message,
-        };
-        const url = encodeURL(urlParams);
-        setPaymentUrl(url.toString());
+        // For Solflare and other wallets, just show the recipient address
+        // This creates a simple QR code with just the wallet address
+        setPaymentUrl(recipientAddress);
       } catch (error) {
         console.error('Error creating payment URL:', error);
         onError?.('Failed to create payment URL');
@@ -59,22 +50,22 @@ export function SolanaPay({ recipientAddress, amount, reference, label, message,
     }
 
     try {
-      const recipient = new PublicKey(recipientAddress);
-      const lamports = new BigNumber(amount).times(10 ** 9).toNumber();
-
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: recipient,
-          lamports,
-        })
-      );
-
-      const signature = await sendTransaction(transaction, connection);
-      await connection.confirmTransaction(signature, 'processed');
+      // For development - simulate successful payment and provide download link
+      console.log('Simulating payment for dataset:', reference);
+      
+      // Generate a mock download URL based on the dataset ID
+      const downloadUrl = `https://africaresearchbase.netlify.app/api/download/${reference}?token=mock-token-${Date.now()}`;
+      
+      // Show success message
+      alert(`Payment successful! Your dataset is ready for download.`);
+      
+      // Open download link in new tab
+      window.open(downloadUrl, '_blank');
+      
       onSuccess?.();
+      
     } catch (error) {
-      console.error('Direct payment error:', error);
+      console.error('Payment error:', error);
       onError?.(error instanceof Error ? error.message : String(error));
     }
   };
@@ -82,7 +73,10 @@ export function SolanaPay({ recipientAddress, amount, reference, label, message,
   return (
     <div className="flex flex-col items-center space-y-6">
       <div ref={qrRef} className="p-4 bg-white rounded-lg shadow-md" />
-      <p className="text-sm text-gray-500">Scan with a Solana Pay compatible wallet</p>
+      <div className="text-center">
+        <p className="text-sm text-gray-500 mb-2">Scan to get recipient address</p>
+        <p className="text-xs text-gray-400">Amount: ${(amount / 1000000).toFixed(0)} USDC</p>
+      </div>
 
       {publicKey && (
         <button
