@@ -11,6 +11,7 @@ declare module 'next-auth' {
       role: string;
       totalPoints: number;
     };
+    supabaseAccessToken?: string | null;
   }
 
   interface User {
@@ -20,6 +21,7 @@ declare module 'next-auth' {
     image?: string;
     role: string;
     totalPoints: number;
+    access_token?: string | null;
   }
 }
 
@@ -30,5 +32,6 @@ declare module 'next-auth/jwt' {
     name: string;
     role: string;
     totalPoints: number;
+    supabaseAccessToken?: string | null;
   }
 }

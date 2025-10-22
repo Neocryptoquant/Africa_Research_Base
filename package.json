@@ -11,7 +11,9 @@
     "@coral-xyz/anchor": "^0.31.1",
     "@solana/web3.js": "^1.98.4",
     "gill": "^0.11.0",
-    "js-sha256": "^0.11.1"
+    "js-sha256": "^0.11.1",
+    "react-hot-toast": "^2.6.0",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.0",
