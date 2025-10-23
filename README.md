@@ -1,246 +1,130 @@
-# Africa_Research_Base
 
-Great things, they say, begin with an idea. This is a great idea. 
+
+# Africa Research Base
 
 > **Turning African research data into a shared continental resource**
 
 [![Built on Solana](https://img.shields.io/badge/Built%20on-Solana-green)](https://solana.com/)
 [![AI Powered](https://img.shields.io/badge/AI-Powered-blue)](https://groq.com/)
-[![Made in Africa](https://img.shields.io/badge/Made%20in-Africa-red)](https://github.com)
 
-**The Problem:** Brilliant research data from African universities disappears when projects end. Students graduate, datasets vanish, and future researchers reinvent the wheel.
+Africa Research Base is an AI-powered data repository with blockchain attribution that enables researchers across African institutions to upload datasets, gain recognition for their contributions, and discover relevant research from across the continent.
 
-**Our Solution:** AI-powered data repository with blockchain attribution. Upload once, get discovered forever, build reputation through meaningful contributions.
+## The Problem
+
+Valuable research data from African universities disappears when projects end. Students graduate, datasets vanish, and future researchers start from scratch. This creates a cycle of duplicated effort and lost knowledge that hinders scientific progress across the continent.
+
+## Our Solution
+
+A blockchain-based research data platform that preserves institutional knowledge, ensures transparent attribution, and builds verifiable research reputation. Every dataset uploaded becomes a permanent, discoverable resource with immutable attribution records.
 
 ---
 
-## ✨ What We're Building
+## Key Features
 
 **For Researchers:**
-- 📤 **Upload datasets** with drag-and-drop simplicity
-- 🤖 **AI analysis** extracts metadata in 60 seconds
-- 📊 **Analytics dashboards** for dataset usage and reputation
-- 🔍 **Discover similar data** from across African institutions
-- 📊 **Get attribution** for every download and citation (on-chain)
+- Upload datasets with automated AI-powered metadata extraction
+- Track dataset usage and citations with on-chain attribution
+- Discover relevant research data from across African institutions
+- Build verifiable research reputation through contributions
 
-**For the Ecosystem:**
-- 🏛️ **Cross-institutional** collaboration without silos
-- 🔗 **Transparent attribution** via Solana blockchain
-- 📈 **Impact tracking** for research contributions
-- 🧩 **Modular smart contract logic** for extensibility
-- 🛡️ **Custom error codes** for robust validation
-- 🌍 **Continental knowledge base** that grows with every upload
+**For Institutions:**
+- Cross-institutional collaboration platform
+- Transparent attribution via Solana blockchain
+- Impact tracking for research contributions
+- Continental knowledge base that preserves institutional research
 
 ---
 
-## 🚀 Live Demo
+## Live Application
 
-**Try it out:** [africaresearchbase.netlify.com](https://africaresearchbase.netlify.com) 
+**Access:** [africaresearchbase.netlify.com](https://africaresearchbase.netlify.com)
 
-**Demo Flow:**
-1. Upload your research dataset (CSV/Excel)
-2. Watch AI analyze columns, quality, and research field
-3. See your data become discoverable by peers
-4. Track downloads and build on-chain reputation
+<img width="1905" height="749" alt="image" src="https://github.com/user-attachments/assets/97c2ccd4-7e0b-4eb5-aa65-f890c7ea831e" />
+---
+
+## Technology Stack
+
+- **Frontend:** Next.js, TypeScript, TailwindCSS
+- **Blockchain:** Solana (Anchor framework) - ensures immutable attribution and transparent reputation tracking
+- **Storage:** Google Drive API - cost-optimized hybrid storage solution
+- **AI:** Groq, LangChain - real-time metadata extraction and analysis
+- **Database:** Supabase - search and indexing infrastructure
+- **Analytics:** Custom dashboards for usage tracking and impact measurement
 
 ---
 
-## 🛠️ Tech Stack
+## Market Opportunity
 
-- **Frontend:** Next.js + TypeScript + TailwindCSS
-- **Blockchain:** Solana (Anchor smart contracts, modular instructions, on-chain reputation)
-- **Storage:** Google Drive API (cost-optimized hybrid)
-- **AI:** Groq + LangChain (real-time analysis, metadata extraction)
-- **Database:** Supabase (search + indexing)
-- **Analytics:** Custom dashboards for dataset usage and reputation
+### Target Market
+- **300+ universities** across Africa
+- **500,000+ active researchers** annually
+- Growing demand for research collaboration infrastructure
+- Institutional need for attribution and impact tracking
 
----
-
-## 🏃‍♂️ Quick Start
-
-### Prerequisites
-- Node.js 18+
-- Yarn or npm
-- Solana CLI
-- Google Cloud Console access
-
-### Local Development
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/africa-data-bank.git
-cd africa-data-bank
-
-# Install dependencies
-yarn install
-
-# Set up environment variables
-cp .env.example .env.local
-```
-
-### Environment Setup
-
-Create `.env.local` with:
-
-```bash
-# Solana Configuration
-NEXT_PUBLIC_SOLANA_NETWORK=devnet
-NEXT_PUBLIC_RPC_ENDPOINT=https://api.devnet.solana.com
-SOLANA_PRIVATE_KEY=your_wallet_private_key
-
-# Groq AI
-GROQ_API_KEY=your_groq_api_key
-
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-### API Keys Setup
-
-1. **Groq API:**
-   ```bash
-   # Sign up at console.groq.com
-   # Create API key in dashboard
-   ```
-
-2. **Supabase:**
-   ```bash
-   # Create project at supabase.com
-   # Copy URL and anon key from settings
-   ```
-
-### Run Development Server
-
-```bash
-# Start the development server
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+### Use Cases
+- **Academic Research:** Dataset sharing across universities
+- **Government:** Evidence-based policy development
+- **Healthcare:** Clinical trial data and public health research
+- **Agriculture:** Climate and crop research collaboration
+- **Development Organizations:** Impact measurement and knowledge preservation
 
 ---
 
+## Traction
 
-## 📁 Project Structure
-
-```
-africa_research_base/
-├── app/
-│   ├── components/          # React components (FileUpload, DatasetAnalytics, PaymentModal, etc.)
-│   ├── hooks/               # Custom React hooks (useDatasets, etc.)
-│   ├── api/                 # API routes (Groq, Solana, file parsing)
-├── programs/
-│   └── africa_research_base/
-│       ├── src/
-│       │   ├── instructions/ # Modular smart contract logic (create_dataset.rs, update_reputation.rs, etc.)
-│       │   ├── state/        # State structs (dataset.rs, reputation.rs, registry.rs)
-│       │   └── error.rs      # Custom error codes
-│       └── tests/            # Anchor TypeScript tests
-├── migrations/               # Deployment scripts
-├── docs/                     # Documentation & diagrams
-└── idl/                      # Anchor IDL files
-```
+- **Live Platform:** Fully functional application on Solana devnet
+- **AI Integration:** Real-time dataset analysis and metadata extraction
+- **Blockchain Infrastructure:** Deployed smart contracts with modular architecture
+- **User Interface:** Production-ready researcher workflow
 
 ---
 
-## 🧪 Testing
+## Roadmap
 
-```bash
-# Run unit tests
-yarn test
-
-# Run integration tests
-yarn test:integration
-
-# Test smart contracts
-cd programs && anchor test
-
-```
+**Phase 1 (Q1 2025):** Advanced search and recommendation engine  
+**Phase 2 (Q2 2025):** Multi-format support and data visualization tools  
+**Phase 3 (Q3 2025):** University partnerships and institutional features  
+**Phase 4 (Q4 2025):** Grant funding integration and comprehensive impact tracking
 
 ---
 
-## 🚢 Deployment
+## Team
 
-
-### Frontend (Netlify)
-```bash
-# Build for production
-yarn build
-
-# Deploy to Netlify
-# Push your repo to GitHub, then connect it to Netlify at https://app.netlify.com/ and set build command to 'yarn build' and publish directory to 'app/app' or your frontend folder.
-```
-### Search Datasets
-```typescript
-GET /api/datasets/search?q=climate&field=environment
-
-Response: {
-   datasets: Dataset[],
-   total: number,
-   page: number
-}
-```
-
-**Note:** All uploads are analyzed in real-time by AI, attributed on-chain, and indexed for search. See [Full API docs →](./docs/api.md)
+- **Mbanwusi Francisca** - Team Lead | Organization & Research Strategy
+- **Abimbola A.E.** - Technical Lead | Full-stack & Solana Development
+- **Chiemere V.** - Design Lead | UI/UX Design
 
 ---
 
-## 🤝 Contributing
+## Business Model
 
-We're building this for the African research community! Here's how you can help:
+### Revenue Streams
+1. **Institutional Subscriptions:** Premium features for universities
+2. **API Access:** Data integration for research platforms
+3. **Analytics Services:** Advanced impact tracking and reporting
+4. **Storage Solutions:** Enhanced storage options for large datasets
 
-1. **🐛 Report bugs** - Found something broken? [Open an issue](https://github.com/neocryptoquant/africa_research_base/issues)
-2. **💡 Suggest features** - Have ideas? We'd love to hear them
-3. **🔧 Submit PRs** - Check our [contributing guide](./CONTRIBUTING.md)
-4. **📊 Share datasets** - Help us test with real research data
-5. **🌍 Spread the word** - Tell your researcher friends!
-
-### Development Workflow
-```bash
-# Create feature branch
-git checkout -b feature/amazing-feature
-
-# Make changes and test
-yarn test
-
-# Commit with conventional commits
-git commit -m "feat: add amazing feature"
-
-# Push and create PR
-git push origin feature/amazing-feature
-```
+### Sustainability
+- Blockchain infrastructure reduces operational costs
+- AI automation minimizes manual processing
+- Scalable architecture supports growth
 
 ---
 
-## 📊 Roadmap
+## Investment Opportunity
 
-- [x] **MVP:** Basic upload + AI analysis + blockchain storage
-- [ ] **Phase 1:** Advanced search + recommendation engine
-- [ ] **Phase 2:** Multi-format support + data visualization
-- [ ] **Phase 3:** University partnerships + institutional features
-- [ ] **Phase 4:** Grant funding integration + impact tracking
+Africa Research Base addresses a critical gap in African research infrastructure while leveraging cutting-edge blockchain and AI technology. We're positioned to become the standard platform for research data management across the continent.
 
-[Detailed roadmap →](./docs/roadmap.md)
+**Contact:** africaresearchbase@gmail.com
 
 ---
 
-## 🏆 Hackathon
-
-Built during the **Solana x AI Hackathon 2025**
-
-**Team:**
-- Team Lead: Mbanwusi Francisca - Organization + Lead Researcher
-- Team Technical Lead: Abimbola A.E. - Full-stack + Solana development
-- Design Lead: Chiemere V. - UI/UX for research workflows
-
----
-
-## 📄 License
+## License
 
 MIT License - see [LICENSE](./LICENSE) for details.
 
+---
 
 **Made with ❤️ for African researchers, by African developers**
 
-*"African research data should work as hard as African researchers do"*
+
