@@ -135,8 +135,8 @@ export function Header({ onUploadClick }: HeaderProps) {
                 My Datasets
               </Link>
 
-              <Link href="/docs" className="text-gray-700 hover:text-blue-600">
-                Docs
+              <Link href="/faq" className="text-gray-700 hover:text-blue-600">
+                FAQ
               </Link>
               <Link href="/about" className="text-gray-700 hover:text-blue-600">
                 About Us
@@ -227,16 +227,6 @@ export function Header({ onUploadClick }: HeaderProps) {
 
                         <button
                           onClick={() => {
-                            setIsReviewModalOpen(true);
-                            setIsDropdownOpen(false);
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                          <Star className="w-4 h-4" /> <span>My Reviews</span>
-                        </button>
-
-                        <button
-                          onClick={() => {
                             setIsWalletModalOpen(true);
                             setIsDropdownOpen(false);
                           }}
@@ -287,8 +277,8 @@ export function Header({ onUploadClick }: HeaderProps) {
                   My Datasets
                 </Link>
 
-                <Link href="/docs" className="text-gray-700 hover:text-blue-600">
-                  Docs
+                <Link href="/faq" className="text-gray-700 hover:text-blue-600">
+                  FAQ
                 </Link>
                 <Link href="/about" className="text-gray-700 hover:text-blue-600">
                   About Us
