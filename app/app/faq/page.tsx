@@ -5,9 +5,9 @@ import { ChevronDown } from "lucide-react";
 
 interface FAQItem {
   question: string;
-  answer: string | JSX.Element;
+  answer: string | JSX.Element; 
 }
-
+ 
 const faqData: FAQItem[] = [
   {
     question: "What is Africa Research Base?",
