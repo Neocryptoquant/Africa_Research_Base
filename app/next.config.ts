@@ -1,9 +1,15 @@
 import { NextConfig } from 'next';
+import path from 'path';
 
 // 0xAbim: Next.js configuration optimized for production deployment on Netlify
 const nextConfig: NextConfig = {
   // 0xAbim: Enable React Strict Mode to identify potential issues in development
   reactStrictMode: true,
+
+  // 0xAbim: Set output file tracing root to parent directory (monorepo structure)
+  // This silences the warning about multiple lockfiles
+  output: 'standalone',
+  outputFileTracingRoot: path.join(__dirname, '../'),
 
   // 0xAbim: Production bundle optimizations
   compiler: {
