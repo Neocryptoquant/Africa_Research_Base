@@ -22,10 +22,10 @@ export function SolutionSection() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
             Our Solution
           </h2>
-          
+
           <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed">
-            AI-powered data repository with blockchain attribution. 
-            Upload once, get discovered forever, build reputation through meaningful contributions.
+            An AI-powered African data repository with transparent blockchain attribution.
+            Upload once, build reputation, collaborate, buy and sell data, share data as a service and stay discoverable forever.
           </p>
         </div>
       </div>

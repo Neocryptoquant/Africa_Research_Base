@@ -22,10 +22,10 @@ export function ProblemSection() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
             The Problem
           </h2>
-          
+
           <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed">
-            Brilliant research data from African universities disappears when projects end. 
-            Students graduate, datasets vanish, and future researchers reinvent the wheel.
+            Africa does not have a central home for its research data.
+            Without a shared repository, researchers, innovators, and builders struggle to find reliable African data wasting time recreating what already exists and relying on foreign sources that don’t reflect our realities.
           </p>
         </div>
       </div>
