@@ -11,12 +11,16 @@
     "@coral-xyz/anchor": "^0.31.1",
     "@solana/web3.js": "^1.98.4",
     "gill": "^0.11.0",
-    "js-sha256": "^0.11.1"
+    "js-sha256": "^0.11.1",
+    "react-hot-toast": "^2.6.0",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.0",
     "@types/chai": "^5.2.0",
+    "@types/d3-ease": "^3.0.2",
     "@types/mocha": "^10.0.10",
+    "@types/retry": "^0.12.5",
     "chai": "^6.0.1",
     "mocha": "^11.7.2",
     "prettier": "^3.6.2",

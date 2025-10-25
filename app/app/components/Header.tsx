@@ -1,159 +1,329 @@
-"use client"
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Menu,
+  X,
+  LogOut,
+  Wallet,
+  User,
+  Star,
+  ChevronDown,
+} from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { SignInModal } from "./SignInModal";
+import { SignUpModal } from "./SignUpModal";
+import { ProfileModal } from "./ProfileModal";
+import { ReviewInterface } from "./ReviewInterface";
+import { createClient } from "@/lib/supabase";
+import { UploadModal } from "./UploadModal";
+import { WalletModal } from "./WalletModal";
+
 
 interface HeaderProps {
-  walletState: {
-    connected: boolean;
-    connecting: boolean;
-    publicKey: string | null;
-    balance: number | null;
-  };
-  onConnectWallet: () => void;
-  onDisconnectWallet: () => void;
-  onUploadClick: () => void;
+  onUploadClick?: () => void;
 }
 
-export function Header({ walletState, onConnectWallet, onDisconnectWallet, onUploadClick }: HeaderProps) {
+export function Header({ onUploadClick }: HeaderProps) {
+  const { data: session, status } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [userPoints, setUserPoints] = useState<number>(0);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const supabase = createClient();
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
+
+  // Fetch total_points on mount or refresh
+  useEffect(() => {
+    if (session?.user?.id) fetchUserPoints();
+  }, [session]);
+
+  const fetchUserPoints = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("total_points")
+        .eq("id", session?.user?.id)
+        .single();
+      if (!error && data?.total_points) setUserPoints(data.total_points);
+    } catch (err) {
+      console.warn("Failed to fetch user points:", err);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn("Supabase signOut error:", err);
+    }
+    window.location.reload();
+  };
+
+  const refreshUserData = async () => {
+    try {
+      await fetchUserPoints(); // ✅ refresh points
+      const { data } = await supabase.auth.getSession();
+      console.log("Refreshed supabase session:", data.session ?? null);
+    } catch (err) {
+      console.warn("Error refreshing user data:", err);
+    }
+  };
+
+  const userInitial = session?.user?.name
+    ? session.user.name.charAt(0).toUpperCase()
+    : "?";
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <Image 
-              src="/logo.svg" 
-              alt="Africa Research Base Logo" 
-              width={32} 
-              height={32}
-              className="w-8 h-8"
-            />
-            <span className="text-xl font-bold text-gray-900 hidden sm:block">
-              AFRICA RESEARCH BASE
-            </span>
-            <span className="text-xl font-bold text-gray-900 sm:hidden">ARB</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/explore" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Discover
-            </Link>
-            
-            <button onClick={onUploadClick} className="text-gray-700 hover:text-blue-600 transition-colors">
-              Upload
-            </button>
-            
-            <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600 transition-colors">
-              My Datasets
-            </Link>
-            
-            <Link href="/docs" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Docs
-            </Link>
-            
-            <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors">
-              About Us
-            </Link>
-          </nav>
-
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-4">
-            {!walletState.connected ? (
-              <>
-                <button 
-                  onClick={onUploadClick}
-                  className="hidden sm:flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
-                >
-                  Upload
-                </button>
-                <button 
-                  onClick={onConnectWallet}
-                  disabled={walletState.connecting}
-                  className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50"
-                >
-                  {walletState.connecting ? 'Connecting...' : 'Connect Wallet'}
-                </button>
-              </>
-            ) : (
-              <>
-                <button 
-                  onClick={onUploadClick}
-                  className="hidden sm:flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
-                >
-                  Upload
-                </button>
-                <div className="hidden sm:flex items-center space-x-3">
-                  <div className="text-sm">
-                    <div className="text-gray-900 font-medium">
-                      {walletState.publicKey?.slice(0, 4)}...{walletState.publicKey?.slice(-4)}
-                    </div>
-                    {walletState.balance !== null && (
-                      <div className="text-gray-500">{(walletState.balance * 150).toFixed(2)} USDC</div>
-                    )}
-                  </div>
-                  <button 
-                    onClick={onDisconnectWallet}
-                    className="text-gray-500 hover:text-gray-700 transition-colors text-sm"
-                  >
-                    Disconnect
-                  </button>
-                </div>
-              </>
-            )}
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+    <>
+      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link
+              href="/"
+              className="flex items-center space-x-3 hover:opacity-80"
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
+              <Image
+                src="/logo.svg"
+                alt="Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8"
+              />
+              <span className="text-xl font-bold text-gray-900 hidden sm:block">
+                AFRICA RESEARCH BASE
+              </span>
+              <span className="text-xl font-bold text-gray-900 sm:hidden">
+                ARB
+              </span>
+            </Link>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
-            <div className="flex flex-col space-y-4">
-              <Link href="/explore" className="text-gray-700 hover:text-blue-600 transition-colors">
+            {/* Navbar Links */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link href="/explore" className="text-gray-700 hover:text-blue-600">
                 Discover
               </Link>
-              <button onClick={onUploadClick} className="text-left text-gray-700 hover:text-blue-600 transition-colors">
+              <button
+                onClick={() => setIsUploadModalOpen(true)}
+                className="text-gray-700 hover:text-blue-600"
+              >
                 Upload
               </button>
-              <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600">
                 My Datasets
               </Link>
-              <Link href="/docs" className="text-gray-700 hover:text-blue-600 transition-colors">
-                Docs
+
+              <Link href="/faq" className="text-gray-700 hover:text-blue-600">
+                FAQ
               </Link>
-              <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link href="/about" className="text-gray-700 hover:text-blue-600">
                 About Us
               </Link>
-              
-              {walletState.connected && (
-                <div className="pt-4 border-t border-gray-100">
-                  <div className="text-sm text-gray-900 font-medium mb-2">
-                    {walletState.publicKey?.slice(0, 4)}...{walletState.publicKey?.slice(-4)}
-                  </div>
-                  <button 
-                    onClick={onDisconnectWallet}
-                    className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-                  >
-                    Disconnect Wallet
-                  </button>
+            </nav>
+
+            {/* Right side controls */}
+            <div className="flex items-center space-x-4">
+              {status === "loading" ? (
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+                  <div className="w-20 h-8 bg-gray-200 rounded animate-pulse hidden sm:block" />
                 </div>
+              ) : !session ? (
+                <>
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="hidden sm:flex px-4 py-2 bg-amber-600 text-white rounded-lg"
+                  >
+                    Upload
+                  </button>
+                  <button
+                    onClick={() => setIsSignInModalOpen(true)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg"
+                  >
+                    Log In
+                  </button>
+                  <button
+                    onClick={() => setIsSignUpModalOpen(true)}
+                    className="hidden sm:flex px-4 py-2 bg-blue-600 text-white rounded-lg"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* Upload button */}
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="hidden sm:flex px-4 py-2 bg-amber-600 text-white rounded-lg"
+                  >
+                    Upload
+                  </button>
+
+                  {/* Profile Dropdown */}
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      onClick={() => setIsDropdownOpen((s) => !s)}
+                      className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 hover:bg-blue-100 transition"
+                      aria-haspopup="true"
+                      aria-expanded={isDropdownOpen}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-800 font-bold">
+                        {userInitial}
+                      </div>
+                      <div className="text-sm font-semibold text-blue-800">
+                        {userPoints ?? 0} pts
+                      </div>
+                      <ChevronDown
+                        className={`w-4 h-4 text-blue-700 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""
+                          }`}
+                      />
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-sm font-semibold text-gray-900">
+                            {session.user?.name ?? "User"}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {session.user?.email ?? ""}
+                          </p>
+                          <p className="mt-1 text-xs text-blue-600 font-medium">
+                            🌟 {userPoints ?? 0} Total Points
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setIsProfileModalOpen(true);
+                            setIsDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        >
+                          <User className="w-4 h-4" /> <span>Profile</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsWalletModalOpen(true);
+                            setIsDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        >
+                          <Wallet className="w-4 h-4" /> <span>Wallet</span>
+                        </button>
+
+
+                        <div className="border-t border-gray-100" />
+
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        >
+                          <LogOut className="w-4 h-4" /> <span>Logout</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
+
+              {/* Mobile Menu Toggle */}
+              <button
+                onClick={() => setIsMenuOpen((s) => !s)}
+                className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              >
+                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
           </div>
-        )}
-      </div>
-    </header>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden py-4 border-t border-gray-100">
+              <div className="flex flex-col space-y-4 px-4">
+                <Link href="/explore" className="text-gray-700 hover:text-blue-600">
+                  Discover
+                </Link>
+                <button
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="text-left text-gray-700 hover:text-blue-600"
+                >
+                  Upload
+                </button>
+                <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600">
+                  My Datasets
+                </Link>
+
+                <Link href="/faq" className="text-gray-700 hover:text-blue-600">
+                  FAQ
+                </Link>
+                <Link href="/about" className="text-gray-700 hover:text-blue-600">
+                  About Us
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Modals */}
+      <SignInModal
+        isOpen={isSignInModalOpen}
+        onClose={() => setIsSignInModalOpen(false)}
+        onSwitchToSignup={() => {
+          setIsSignInModalOpen(false);
+          setIsSignUpModalOpen(true);
+        }}
+      />
+      <SignUpModal
+        isOpen={isSignUpModalOpen}
+        onClose={() => setIsSignUpModalOpen(false)}
+        onSwitchToLogin={() => {
+          setIsSignUpModalOpen(false);
+          setIsSignInModalOpen(true);
+        }}
+      />
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onUpdate={refreshUserData} // ✅ keeps points in sync
+      />
+      <ReviewInterface
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+      />
+      <UploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+      />
+      <WalletModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+      />
+
+    </>
   );
 }
