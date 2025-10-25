@@ -9,7 +9,6 @@ import {
   LogOut,
   Wallet,
   User,
-  Star,
   ChevronDown,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
@@ -20,7 +19,6 @@ import { ReviewInterface } from "./ReviewInterface";
 import { createClient } from "@/lib/supabase";
 import { UploadModal } from "./UploadModal";
 import { WalletModal } from "./WalletModal";
-
 
 interface HeaderProps {
   onUploadClick?: () => void;
@@ -37,7 +35,6 @@ export function Header({ onUploadClick }: HeaderProps) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [userPoints, setUserPoints] = useState<number>(0);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const supabase = createClient();
@@ -125,16 +122,11 @@ export function Header({ onUploadClick }: HeaderProps) {
               <Link href="/explore" className="text-gray-700 hover:text-blue-600">
                 Discover
               </Link>
-              <button
-                onClick={() => setIsUploadModalOpen(true)}
-                className="text-gray-700 hover:text-blue-600"
-              >
-                Upload
-              </button>
-              <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600">
-                My Datasets
-              </Link>
-
+              {session && (
+                <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600">
+                  My Datasets
+                </Link>
+              )}
               <Link href="/faq" className="text-gray-700 hover:text-blue-600">
                 FAQ
               </Link>
@@ -153,12 +145,6 @@ export function Header({ onUploadClick }: HeaderProps) {
               ) : !session ? (
                 <>
                   <button
-                    onClick={() => setIsUploadModalOpen(true)}
-                    className="hidden sm:flex px-4 py-2 bg-amber-600 text-white rounded-lg"
-                  >
-                    Upload
-                  </button>
-                  <button
                     onClick={() => setIsSignInModalOpen(true)}
                     className="px-4 py-2 border border-gray-300 rounded-lg"
                   >
@@ -173,7 +159,7 @@ export function Header({ onUploadClick }: HeaderProps) {
                 </>
               ) : (
                 <>
-                  {/* Upload button */}
+                  {/* Upload button visible only when logged in */}
                   <button
                     onClick={() => setIsUploadModalOpen(true)}
                     className="hidden sm:flex px-4 py-2 bg-amber-600 text-white rounded-lg"
@@ -235,7 +221,6 @@ export function Header({ onUploadClick }: HeaderProps) {
                           <Wallet className="w-4 h-4" /> <span>Wallet</span>
                         </button>
 
-
                         <div className="border-t border-gray-100" />
 
                         <button
@@ -267,16 +252,19 @@ export function Header({ onUploadClick }: HeaderProps) {
                 <Link href="/explore" className="text-gray-700 hover:text-blue-600">
                   Discover
                 </Link>
-                <button
-                  onClick={() => setIsUploadModalOpen(true)}
-                  className="text-left text-gray-700 hover:text-blue-600"
-                >
-                  Upload
-                </button>
-                <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600">
-                  My Datasets
-                </Link>
-
+                {session && (
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="text-left text-gray-700 hover:text-blue-600"
+                  >
+                    Upload
+                  </button>
+                )}
+                {session && (
+                  <Link href="/my-datasets" className="text-gray-700 hover:text-blue-600">
+                    My Datasets
+                  </Link>
+                )}
                 <Link href="/faq" className="text-gray-700 hover:text-blue-600">
                   FAQ
                 </Link>
@@ -309,7 +297,7 @@ export function Header({ onUploadClick }: HeaderProps) {
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
-        onUpdate={refreshUserData} // ✅ keeps points in sync
+        onUpdate={refreshUserData}
       />
       <ReviewInterface
         isOpen={isReviewModalOpen}
@@ -323,7 +311,6 @@ export function Header({ onUploadClick }: HeaderProps) {
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
       />
-
     </>
   );
 }

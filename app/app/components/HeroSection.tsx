@@ -40,22 +40,14 @@ export function HeroSection({ onUploadClick, onExploreClick }: HeroSectionProps)
                   Building a self-sustaining{' '}
                   <span className="text-amber-600">knowledge economy for Africa</span>
                 </h1>
-                
+
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  We&apos;re building a new model for scientific research where publishing 
-                  and peer review lead to funding. Empowering African researchers 
-                  with decentralized data monetization.
+                  Africa does not have a central home for its research data.
+                  Without a shared repository, researchers, innovators, and builders struggle to find reliable African data wasting time recreating what already exists and relying on foreign sources that don’t reflect our realities.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={() => setShowSignupModal(true)}
-                  className="flex items-center justify-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  <span>Sign up</span>
-                </button>
-                
                 <button
                   onClick={onExploreClick}
                   className="flex items-center justify-center space-x-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
@@ -66,10 +58,9 @@ export function HeroSection({ onUploadClick, onExploreClick }: HeroSectionProps)
             </div>
 
             {/* Right Content - Feature Card */}
-            <div 
-              className={`bg-white rounded-2xl shadow-xl p-8 border border-gray-100 cursor-pointer transition-all duration-300 ${
-                isCardClicked ? 'scale-95 shadow-lg' : 'hover:shadow-2xl hover:scale-105'
-              }`}
+            <div
+              className={`bg-white rounded-2xl shadow-xl p-8 border border-gray-100 cursor-pointer transition-all duration-300 ${isCardClicked ? 'scale-95 shadow-lg' : 'hover:shadow-2xl hover:scale-105'
+                }`}
               onClick={handleCardClick}
             >
               <div className="space-y-6">
@@ -79,14 +70,14 @@ export function HeroSection({ onUploadClick, onExploreClick }: HeroSectionProps)
                   </div>
                   <span className="font-semibold text-gray-900">Upload Research Data</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                     <TrendingUp className="w-4 h-4 text-green-600" />
                   </div>
                   <span className="font-semibold text-gray-900">Get Funded</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Globe className="w-4 h-4 text-blue-600" />
@@ -113,7 +104,7 @@ export function HeroSection({ onUploadClick, onExploreClick }: HeroSectionProps)
           <div className="bg-white rounded-2xl p-8 max-w-md w-full">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Join Africa Research Base</h2>
             <p className="text-gray-600 mb-6">Enter your email to get started and connect your wallet.</p>
-            
+
             <form onSubmit={handleSignup} className="space-y-4">
               <input
                 type="email"
@@ -123,7 +114,7 @@ export function HeroSection({ onUploadClick, onExploreClick }: HeroSectionProps)
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
-              
+
               <div className="flex space-x-3">
                 <button
                   type="button"
