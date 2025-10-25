@@ -32,16 +32,22 @@ export const supabase = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
 // ✅ App Router Client (for use inside Next.js components)
 export const createClient = () => createClientComponentClient();
 
-// ✅ Server-side Supabase client using Service Role Key (secure admin access)
+// 0xAbim: Server-side Supabase client using Service Role Key (secure admin access)
+// Only available on the server, never exposed to the client
 export const supabaseServer = (() => {
   if (typeof window !== "undefined") return null; // Prevent server key on client
 
   if (!supabaseServiceKey) {
-    console.warn("⚠️ Missing SUPABASE_SERVICE_ROLE_KEY — server operations may fail.");
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn("⚠️ Missing SUPABASE_SERVICE_ROLE_KEY — server operations may fail.");
+    }
     return null;
   }
 
-  console.log("🔐 Supabase service key prefix:", supabaseServiceKey.slice(0, 6));
+  // 0xAbim: Verify service key format in development only
+  if (process.env.NODE_ENV !== 'production') {
+    console.log("🔐 Supabase service key prefix:", supabaseServiceKey.slice(0, 6));
+  }
 
   return createSupabaseClient(supabaseUrl, supabaseServiceKey, {
     auth: { autoRefreshToken: false, persistSession: false },

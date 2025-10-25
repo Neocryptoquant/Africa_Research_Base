@@ -1,5 +1,5 @@
 {
-  "name": "arb",
+  "name": "africa-research-base",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next out dist",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.1",

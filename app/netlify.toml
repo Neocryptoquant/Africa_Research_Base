@@ -1,14 +1,53 @@
-# netlify.toml
+# ========================================
+# Africa Research Base - Netlify Configuration
+# ========================================
+# 0xAbim: Optimized for production deployment on Netlify
+# This configuration handles Next.js 15 app router with serverless functions
+
 [build]
+  # 0xAbim: Base directory set to 'app' since Next.js project is in /app subdirectory
   base = "app"
-  command = "yarn install && yarn build"
+
+  # 0xAbim: Build command installs dependencies and builds Next.js application
+  command = "yarn install --frozen-lockfile && yarn build"
+
+  # 0xAbim: Next.js output directory for static files and serverless functions
   publish = ".next"
 
 [build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_RPC_ENDPOINT,PROGRAM_ID"
-  SECRETS_SCAN_OMIT_PATHS = "node_modules,.next,dist,target,idl.json"
+  # 0xAbim: Exclude public environment variables from Netlify's secrets scanner to avoid false positives
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_RPC_ENDPOINT,PROGRAM_ID,NEXT_PUBLIC_SOLANA_NETWORK"
+
+  # 0xAbim: Exclude build artifacts and dependencies from secrets scanning
+  SECRETS_SCAN_OMIT_PATHS = "node_modules,.next,dist,target,idl.json,.vercel"
+
+  # 0xAbim: Increase Node.js memory limit for large builds (8GB)
   NODE_OPTIONS = "--max-old-space-size=8192"
+
+  # 0xAbim: Set production environment for optimized builds
   NODE_ENV = "production"
 
-# Removed @netlify/plugin-nextjs - Netlify automatically uses OpenNext adapter for Next.js 13.5+
-  
+# 0xAbim: Netlify automatically uses OpenNext adapter for Next.js 13.5+ (no plugin needed)
+# OpenNext handles serverless functions, API routes, and static site generation
+
+[[redirects]]
+  # 0xAbim: Redirect HTTP to HTTPS for security
+  from = "http://africaresearchbase.netlify.app/*"
+  to = "https://africaresearchbase.netlify.app/:splat"
+  status = 301
+  force = true
+
+[[headers]]
+  # 0xAbim: Security headers for all pages
+  for = "/*"
+  [headers.values]
+    # Prevent clickjacking attacks
+    X-Frame-Options = "DENY"
+    # Prevent MIME type sniffing
+    X-Content-Type-Options = "nosniff"
+    # Enable XSS protection
+    X-XSS-Protection = "1; mode=block"
+    # Only allow HTTPS connections
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # Control which features and APIs can be used
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
