@@ -1,13 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// app/api/datasets/share/[token]/route.ts
+// 0xAbim: Dataset sharing API route
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Use service role for public access
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// 0xAbim: Initialize Supabase client lazily to avoid build-time errors
+// Using service role key for public dataset access
+const getSupabaseClient = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing Supabase credentials');
+  }
+
+  return createClient(supabaseUrl, supabaseKey);
+};
 
 export async function GET(
   req: NextRequest,
@@ -15,6 +22,7 @@ export async function GET(
 ) {
   try {
     const { token } = await params;
+    const supabase = getSupabaseClient();
 
     // Get dataset by share token
     const { data: dataset, error } = await supabase
@@ -115,6 +123,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const supabase = getSupabaseClient();
 
     // Update dataset
     const { data, error } = await supabase
